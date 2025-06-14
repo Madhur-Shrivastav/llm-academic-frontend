@@ -9,67 +9,30 @@ import {
 const Questionnaire = () => {
   const [questions, setQuestions] = useState([]);
   const [formData, setFormData] = useState({});
-  const [educationLevel, setEducationLevel] = useState(null); // Added state for education level
+  const [educationLevel, setEducationLevel] = useState(null);
+  const [user_id, setUserId] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
-    const education_level_raw = sessionStorage.getItem("education_level");
-    let parsedEducationLevel = null;
-    if (
-      education_level_raw &&
-      education_level_raw !== "undefined" &&
-      education_level_raw !== ""
-    ) {
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
       try {
-        parsedEducationLevel = JSON.parse(education_level_raw);
-      } catch (error) {
-        console.error(
-          "Failed to parse education_level from sessionStorage:",
-          error
-        );
-        // Optionally, handle this error, e.g., by navigating or showing a message
+        const parsedUser = JSON.parse(storedUser);
+        const level = parsedUser.education_level;
+
+        if (level) {
+          setEducationLevel(level);
+          sessionStorage.setItem("education_level", level);
+          setUserId(parsedUser.id);
+        }
+      } catch (err) {
+        console.error("Failed to parse user from localStorage", err);
       }
-    }
-    setEducationLevel(parsedEducationLevel); // Store the parsed object or null
-
-    let selectedQuestions = [];
-    if (
-      parsedEducationLevel &&
-      parsedEducationLevel.education_level === "9th or 10th"
-    ) {
-      selectedQuestions = tenth_grade_questions;
-    } else if (
-      parsedEducationLevel &&
-      parsedEducationLevel.education_level === "11th or 12th"
-    ) {
-      selectedQuestions = senior_secondary_questions;
     } else {
-      // Default to graduate questions if education level is not specified or doesn't match
-      selectedQuestions = graduate_questions;
-    }
-    setQuestions(selectedQuestions);
-
-    setFormData((prev) => {
-      const initData = {};
-      selectedQuestions.forEach((q) => {
-        initData[q.name] = "";
-      });
-      return { ...prev, ...initData };
-    });
-  }, []); // Empty dependency array is correct for one-time setup
-
-  const [user_id, setUserId] = useState(null);
-
-  useEffect(() => {
-    const storedUserId = localStorage.getItem("user_id"); // Get user_id directly
-    if (storedUserId) {
-      setUserId(storedUserId);
-    } else {
-      // Handle case where user_id is not found in localStorage
-      console.error("User ID not found in localStorage.");
+      console.error("User not found in localStorage");
       navigate("/auth/login");
     }
-  }, [navigate]); // Added navigate to dependency array
+  }, [navigate]);
 
   useEffect(() => {
     if (user_id) {
@@ -83,7 +46,29 @@ const Questionnaire = () => {
       [name]: value,
     }));
   };
-  // const navigate = useNavigate(); // Removed from here
+
+  useEffect(() => {
+    if (!educationLevel) return;
+
+    let selectedQuestions = [];
+    if (educationLevel === "9th or 10th") {
+      selectedQuestions = tenth_grade_questions;
+    } else if (educationLevel === "11th or 12th") {
+      selectedQuestions = senior_secondary_questions;
+    } else {
+      selectedQuestions = graduate_questions;
+    }
+
+    setQuestions(selectedQuestions);
+
+    setFormData((prev) => {
+      const initData = {};
+      selectedQuestions.forEach((q) => {
+        initData[q.name] = "";
+      });
+      return { ...prev, ...initData };
+    });
+  }, [educationLevel]);
 
   return (
     <div className="min-h-screen w-full bg-white flex flex-col items-center py-10 px-4 sm:px-8 font-poppins">

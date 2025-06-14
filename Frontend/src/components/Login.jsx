@@ -4,21 +4,20 @@ import { Link, useNavigate } from "react-router-dom";
 const Login = () => {
   const emailRef = useRef(null);
   const passwordRef = useRef(null);
-  const navigate = useNavigate(); // Moved navigate initialization here
+  const navigate = useNavigate();
 
   useEffect(() => {
     emailRef.current?.focus();
-    // passwordRef.current?.focus(); // Focusing on one field is usually enough
   }, []);
 
   useEffect(() => {
-    const education_level = sessionStorage.getItem("education_level"); // Typo fixed: educatioan_level -> education_level
+    const education_level = sessionStorage.getItem("education_level");
     if (education_level) {
       // This logic might need re-evaluation depending on desired flow.
       // For now, keeping it but noting it might conflict if user explicitly navigates to login.
       // navigate("/welcome");
     }
-  }, [navigate]); // Added navigate to dependency array
+  }, [navigate]);
 
   const [formData, setFormData] = useState({
     email: "",
@@ -50,15 +49,21 @@ const Login = () => {
         throw new Error(data.detail || "Login failed");
       }
       localStorage.setItem("token", data.access_token);
-      // localStorage.setItem("user", JSON.stringify(data.user)); // Old line
-      if (data.user_id) {
-        localStorage.setItem("user_id", data.user_id);
-      } else {
-        // localStorage.removeItem("user"); // Not needed as we are not setting "user"
-        console.warn(
-          "User ID from API was undefined or invalid. 'user_id' not set in localStorage."
-        );
-      }
+      const mergedUser = {
+        id: data.user_id,
+        education_level: data.education_level,
+        email: formData.email,
+      };
+      localStorage.setItem("user", JSON.stringify(mergedUser));
+
+      // if (data.user_id) {
+      //   localStorage.setItem("user_id", data.user_id);
+      // } else {
+      //   localStorage.removeItem("user");
+      //   console.warn(
+      //     "User ID from API was undefined or invalid. 'user_id' not set in localStorage."
+      //   );
+      // }
       localStorage.setItem("loginTime", Date.now().toString());
 
       // After successful login, check questionnaire status
@@ -73,10 +78,11 @@ const Login = () => {
               method: "GET",
               headers: {
                 "Content-Type": "application/json",
-                // Authorization: `Bearer ${data.access_token}` // Add if endpoint is protected
+                Authorization: `Bearer ${data.access_token}`,
               },
             }
           );
+          console.log(questionnaireRes);
 
           if (questionnaireRes.ok) {
             // Questionnaire data exists

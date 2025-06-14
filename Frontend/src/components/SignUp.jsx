@@ -59,11 +59,11 @@ const SignUp = () => {
         throw new Error(data.detail || "Login failed");
       }
       console.log(data);
-      sessionStorage.setItem("user", JSON.stringify(data.user));
-      sessionStorage.setItem(
-        "education_level",
-        JSON.stringify(data.education_level)
-      );
+      // sessionStorage.setItem("user", JSON.stringify(data.user));
+      // sessionStorage.setItem(
+      //   "education_level",
+      //   JSON.stringify(data.education_level)
+      // );
       console.log(data);
       navigate("/welcome");
     } catch (error) {
