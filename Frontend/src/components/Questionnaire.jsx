@@ -34,7 +34,7 @@ const Questionnaire = () => {
     }
   }, [navigate]);
 
-  console.log(educationLevel.education_level);
+  console.log(educationLevel);
   useEffect(() => {
     if (user_id) {
       setFormData((prev) => ({ ...prev, user_id }));
@@ -48,6 +48,7 @@ const Questionnaire = () => {
     }));
   };
 
+  console.log(formData);
   useEffect(() => {
     if (!educationLevel) return;
 
@@ -135,12 +136,12 @@ const Questionnaire = () => {
 
                 const payload = {
                   user_id,
-                  education_level: backendEducationLevel, // String, not object
+                  education_level: backendEducationLevel,
                   raw_responses: answers,
                   questions_data: questionsData,
                 };
 
-                console.log("Sending payload:", payload); // Debug log
+                console.log("Sending payload:", payload);
 
                 const response = await fetch(
                   `${import.meta.env.VITE_API_URL}profile/questionnaire`,

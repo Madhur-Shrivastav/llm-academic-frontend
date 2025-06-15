@@ -66,70 +66,69 @@ const Login = () => {
       //   );
       // }
       localStorage.setItem("loginTime", Date.now().toString());
+      navigate("/chat");
 
-      // After successful login, check questionnaire status
-      // Use data directly from the API response for immediate checks
-      if (data.user_id) {
-        try {
-          const questionnaireRes = await fetch(
-            `${import.meta.env.VITE_API_URL}profile/questionnaire/${
-              data.user_id
-            }`,
-            {
-              method: "GET",
-              headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${data.access_token}`,
-              },
-            }
-          );
-          console.log(questionnaireRes);
+      // if (data.user_id) {
+      //   try {
+      //     const questionnaireRes = await fetch(
+      //       `${import.meta.env.VITE_API_URL}profile/questionnaire/${
+      //         data.user_id
+      //       }`,
+      //       {
+      //         method: "GET",
+      //         headers: {
+      //           "Content-Type": "application/json",
+      //           Authorization: `Bearer ${data.access_token}`,
+      //         },
+      //       }
+      //     );
+      //     console.log(questionnaireRes);
 
-          if (questionnaireRes.ok) {
-            // Questionnaire data exists
-            navigate("/chat"); // Navigate to chat area
-          } else if (questionnaireRes.status === 404) {
-            // Questionnaire data does not exist
-            if (data.education_level) {
-              sessionStorage.setItem(
-                "education_level",
-                JSON.stringify({ education_level: data.education_level })
-              );
-              navigate("/profile/questionnaire");
-            } else {
-              navigate("/welcome");
-            }
-          } else {
-            // Handle other errors from questionnaire check
-            console.error(
-              "Error checking questionnaire status:",
-              await questionnaireRes.text()
-            );
-            // CORS or other network errors - fallback to welcome page
-            navigate("/welcome");
-          }
-        } catch (qError) {
-          console.error("Failed to fetch questionnaire status:", qError);
-          // Handle CORS errors or network issues
-          if (qError.message.includes("CORS") || qError.name === "TypeError") {
-            console.warn(
-              "CORS error detected. Redirecting to welcome page as fallback."
-            );
-            navigate("/welcome");
-          } else {
-            alert(
-              "An error occurred while checking your profile status. Proceeding to welcome page."
-            );
-            navigate("/welcome");
-          }
-        }
-      } else {
-        // Fallback if user_id is not available from API response
-        console.warn(
-          "User ID missing in API response. Navigating to default page, expecting ChatArea to redirect to login if needed."
-        );
-        navigate("/");
-      }
+      //     if (questionnaireRes.ok) {
+      //       // Questionnaire data exists
+      //       navigate("/chat"); // Navigate to chat area
+      //     } else if (questionnaireRes.status === 404) {
+      //       // Questionnaire data does not exist
+      //       if (data.education_level) {
+      //         sessionStorage.setItem(
+      //           "education_level",
+      //           JSON.stringify({ education_level: data.education_level })
+      //         );
+      //         navigate("/profile/questionnaire");
+      //       } else {
+      //         navigate("/welcome");
+      //       }
+      //     } else {
+      //       // Handle other errors from questionnaire check
+      //       console.error(
+      //         "Error checking questionnaire status:",
+      //         await questionnaireRes.text()
+      //       );
+      //       // CORS or other network errors - fallback to welcome page
+      //       navigate("/welcome");
+      //     }
+      //   } catch (qError) {
+      //     console.error("Failed to fetch questionnaire status:", qError);
+      //     // Handle CORS errors or network issues
+      //     if (qError.message.includes("CORS") || qError.name === "TypeError") {
+      //       console.warn(
+      //         "CORS error detected. Redirecting to welcome page as fallback."
+      //       );
+      //       navigate("/welcome");
+      //     } else {
+      //       alert(
+      //         "An error occurred while checking your profile status. Proceeding to welcome page."
+      //       );
+      //       navigate("/welcome");
+      //     }
+      //   }
+      // } else {
+      //   // Fallback if user_id is not available from API response
+      //   console.warn(
+      //     "User ID missing in API response. Navigating to default page, expecting ChatArea to redirect to login if needed."
+      //   );
+      //   navigate("/");
+      // }
     } catch (error) {
       console.error("Login error:", error);
       alert(error.message || "Login failed. Please try again.");

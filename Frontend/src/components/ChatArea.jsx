@@ -19,13 +19,13 @@ const ChatArea = () => {
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    // const storedUserId = localStorage.getItem("user_id");
+    const storedUserId = JSON.parse(localStorage.getItem("user")).id;
 
     if (!token) {
       navigate("/auth/login");
       return;
     }
-    // setUserId(storedUserId);
+    setUserId(storedUserId);
   }, [navigate]);
 
   const handleInputChange = (e) => {
@@ -40,7 +40,7 @@ const ChatArea = () => {
         content: inputValue.trim(),
         timestamp: new Date().toISOString(),
       };
-      // Optimistically update UI with user's message
+
       setMessages((prev) => [...prev, userMessage]);
       setInputValue("");
       setLoading(true);
