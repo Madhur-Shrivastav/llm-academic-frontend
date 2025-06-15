@@ -21,7 +21,7 @@ const ChatArea = () => {
     const token = localStorage.getItem("token");
     const storedUserId = JSON.parse(localStorage.getItem("user")).id;
 
-    if (!token) {
+    if (!token || !storedUserId) {
       navigate("/auth/login");
       return;
     }

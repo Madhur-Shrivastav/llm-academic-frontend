@@ -118,7 +118,6 @@ const Questionnaire = () => {
                   }
                 }
 
-                // Prepare questions_data for better LLM analysis
                 const questionsData = {};
                 questions.forEach((question, index) => {
                   const questionId = question.name || `q${index + 1}`;
@@ -126,11 +125,11 @@ const Questionnaire = () => {
                     text: question.prompt,
                     options: question.options
                       ? question.options.reduce((opts, option, optIndex) => {
-                          opts[String.fromCharCode(97 + optIndex)] = option; // a, b, c, d...
+                          opts[String.fromCharCode(97 + optIndex)] = option;
                           return opts;
                         }, {})
                       : {},
-                    category: question.name, // Assuming q.name can serve as category
+                    category: question.name,
                   };
                 });
 
@@ -158,14 +157,13 @@ const Questionnaire = () => {
                   const result = await response.json();
                   console.log("Success:", result);
 
-                  // Store the LLM profile for the Result component
                   sessionStorage.setItem(
                     "llm_profile",
                     JSON.stringify(result.llm_profile)
                   );
                   sessionStorage.setItem("questionnaire_id", result.id);
 
-                  navigate(`/result`); // Navigate to results page
+                  navigate(`/result`);
                 } else {
                   const errorData = await response.json().catch(() => ({}));
                   console.error("Server error:", errorData);

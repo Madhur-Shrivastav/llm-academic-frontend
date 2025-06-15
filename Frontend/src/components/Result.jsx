@@ -22,7 +22,7 @@ const Result = () => {
     }
   }, []);
 
-  const navigate = useNavigate(); // Added useNavigate
+  const navigate = useNavigate();
 
   if (loading) {
     return (
@@ -60,7 +60,6 @@ const Result = () => {
     personality_scores,
   } = profileData;
 
-  // Determine current subjects based on interest_distribution (example logic)
   const getTopInterests = (interests, topN = 2) => {
     if (!interests) return "Not specified";
     return Object.entries(interests)
