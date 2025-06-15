@@ -19,13 +19,13 @@ const ChatArea = () => {
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    const storedUserId = localStorage.getItem("user_id");
+    // const storedUserId = localStorage.getItem("user_id");
 
-    if (!token || !storedUserId) {
+    if (!token) {
       navigate("/auth/login");
       return;
     }
-    setUserId(storedUserId);
+    // setUserId(storedUserId);
   }, [navigate]);
 
   const handleInputChange = (e) => {

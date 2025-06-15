@@ -34,6 +34,7 @@ const Questionnaire = () => {
     }
   }, [navigate]);
 
+  console.log(educationLevel.education_level);
   useEffect(() => {
     if (user_id) {
       setFormData((prev) => ({ ...prev, user_id }));
@@ -104,8 +105,8 @@ const Questionnaire = () => {
 
                 // Map frontend education levels to backend format
                 let backendEducationLevel = "graduate"; // default
-                if (educationLevel && educationLevel.education_level) {
-                  const level = educationLevel.education_level;
+                if (educationLevel) {
+                  const level = educationLevel;
                   if (level === "9th or 10th") {
                     backendEducationLevel = "10th";
                   } else if (level === "11th or 12th") {

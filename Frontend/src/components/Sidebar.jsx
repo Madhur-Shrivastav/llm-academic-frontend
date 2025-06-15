@@ -9,7 +9,10 @@ const Sidebar = () => {
   const [isGeneratingReport, setIsGeneratingReport] = useState(false);
 
   const downloadReport = async () => {
-    const userId = localStorage.getItem("user_id");
+    const storedUser = localStorage.getItem("user");
+    const parsedUser = JSON.parse(storedUser);
+
+    const userId = parsedUser.id;
     if (!userId) {
       alert("User ID not found. Please log in again.");
       return;
