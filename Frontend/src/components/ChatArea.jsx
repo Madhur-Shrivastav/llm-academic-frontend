@@ -11,7 +11,7 @@ import Markdown from "react-markdown";
 const ChatArea = () => {
   const [inputValue, setInputValue] = useState("");
   const navigate = useNavigate();
-  const [messages, setMessages] = useState([]); // Initialize with empty array
+  const [messages, setMessages] = useState([]);
   const [userId, setUserId] = useState(null);
   const [currentSessionId, setCurrentSessionId] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -19,13 +19,25 @@ const ChatArea = () => {
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    const storedUserId = JSON.parse(localStorage.getItem("user")).id;
+    const userData = localStorage.getItem("user");
 
-    if (!token || !storedUserId) {
+    if (!userData) {
       navigate("/auth/login");
       return;
     }
-    setUserId(storedUserId);
+
+    try {
+      const parsedUser = JSON.parse(userData);
+      if (!parsedUser?.id) {
+        navigate("/auth/login");
+        return;
+      }
+
+      setUserId(parsedUser.id);
+    } catch (error) {
+      console.error("Invalid user data in localStorage:", error);
+      navigate("/auth/login");
+    }
   }, [navigate]);
 
   const handleInputChange = (e) => {
@@ -134,24 +146,24 @@ const ChatArea = () => {
           {open && (
             <div className="absolute right-4 top-16 w-60 bg-gray-800 shadow-2xl rounded-xl z-50 border border-gray-600">
               <ul className="flex flex-col">
-                <Link
+                {/* <Link
                   to="/profile"
                   className="px-6 py-3 hover:bg-gray-700 text-white text-base rounded-t-xl transition-all duration-200 flex items-center gap-2"
                 >
                   <CgProfile />
                   Profile
-                </Link>
-                <Link
+                </Link> */}
+                {/* <Link
                   to="/settings"
                   className="px-6 py-3 hover:bg-gray-700 text-white text-base transition-all duration-200 flex items-center gap-2"
                 >
                   <IoMdSettings />
                   Settings
-                </Link>
+                </Link> */}
                 <button
                   onClick={() => {
                     localStorage.removeItem("token");
-                    localStorage.removeItem("user_id"); // Changed from "user"
+                    localStorage.removeItem("user"); // Changed from "user"
                     localStorage.removeItem("loginTime");
                     navigate("/auth/login");
                   }}
@@ -185,8 +197,8 @@ const ChatArea = () => {
                 <div
                   className={`p-3 rounded-lg max-w-[75%] text-sm ${
                     msg.role === "user"
-                      ? "bg-yellow-200 text-gray-700 rounded-br-none"
-                      : "bg-gray-700 text-gray-100 rounded-bl-none"
+                      ? "bg-yellow-400 text-gray-700 rounded-br-none"
+                      : "bg-yellow-200 text-gray-700 rounded-bl-none"
                   }`}
                 >
                   <Markdown>{msg.content}</Markdown>
@@ -216,7 +228,7 @@ const ChatArea = () => {
             ))}
           {loading && (
             <div className="flex justify-start">
-              <div className="p-3 rounded-lg max-w-[75%] text-sm bg-gray-700 text-gray-100 rounded-bl-none">
+              <div className="p-3 rounded-lg max-w-[75%] text-sm bg-yellow-600 text-gray-100 rounded-bl-none">
                 Thinking...
               </div>
             </div>

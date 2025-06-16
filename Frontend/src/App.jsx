@@ -17,7 +17,7 @@ function App() {
   return (
     <>
       <Routes>
-        <Route path="/" element={<Navigate replace to="/welcome" />} />{" "}
+        <Route path="/" element={<Navigate replace to="/auth/signup" />} />{" "}
         {/* Added redirect for root path */}
         <Route
           path="/chat" // Changed from "/" to "/chat"

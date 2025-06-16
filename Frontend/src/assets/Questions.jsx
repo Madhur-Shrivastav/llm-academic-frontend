@@ -79,7 +79,7 @@ export const senior_secondary_questions = [
       "👩‍💼 Managing teams, leading projects",
       "📊 Analyzing numbers/data",
       "📝 Writing stories, articles, content",
-      "🤝 Helping others, counseling",
+      "🤝 Helping people, counseling",
       "🔬 Experimenting, doing science projects",
       "💻 Coding, building apps/websites",
       "📢 Business/marketing related activities",
@@ -178,7 +178,7 @@ export const senior_secondary_questions = [
     prompt:
       "Is there any specific dream, goal, or profession you are secretly passionate about?",
     name: "secret_passion_open_ended",
-    options: [],
+    //options: [],
   },
 ];
 
@@ -207,10 +207,10 @@ export const tenth_grade_questions = [
       "🧬 Learning about the human body, nature, or doing experiments related to biology (✓ Science/Biology/PCB)",
       "🗳️ Understanding society, politics, or history and discussing current events (✓ Arts/Social Science)",
       "💹 Thinking of business ideas, planning money, or managing things like a startup (✓ Commerce/Business)",
-      "✍️ Explaining concepts in a simple way to others or writing with clarity and facts (✓ Arts/Teaching/Communication)",
+      "✍️ Explaining concepts in a simple way to people or writing with clarity and facts (✓ Arts/Teaching/Communication)",
     ],
   },
-  {
+  /*{
     title: "Q3.",
     prompt:
       "How would you rate your recent marks in the following subjects? (Choose the most appropriate range for each)",
@@ -222,6 +222,19 @@ export const tenth_grade_questions = [
       "📝 English/Hindi: 40–50%, 50–60%, 60–70%, 70–80%, 80–90%, 90%+",
       "💻 Computer/IT/Other: 40–50%, 50–60%, 60–70%, 70–80%, 80–90%, 90%+",
     ],
+  },*/
+  {
+    title: "Q3.",
+    prompt:
+      "How would you rate your recent marks in the following subjects? (Choose the most appropriate range for each)",
+    name: "academic_strengths_marks",
+    options: {
+      Math: ["40–50%", "50–60%", "60–70%", "70–80%", "80–90%", "90%+"],
+      Science: ["40–50%", "50–60%", "60–70%", "70–80%", "80–90%", "90%+"],
+      SocialScience: ["40–50%", "50–60%", "60–70%", "70–80%", "80–90%", "90%+"],
+      EnglishHindi: ["40–50%", "50–60%", "60–70%", "70–80%", "80–90%", "90%+"],
+      ComputerIT: ["40–50%", "50–60%", "60–70%", "70–80%", "80–90%", "90%+"],
+    },
   },
   {
     title: "Q4.",
@@ -310,7 +323,7 @@ export const tenth_grade_questions = [
       "🌿 Exploring nature or learning about life science",
       "📰 Reading history, polity, or watching news",
       "💡 Thinking of new business ideas or planning finances",
-      "🗣️ Writing, speaking, or teaching others",
+      "🗣️ Writing, speaking, or teaching people",
     ],
   },
   {
@@ -321,7 +334,7 @@ export const tenth_grade_questions = [
       "🏛️ Achieving a respected position like an IAS officer or lawyer",
       "🔬 Doing deep research in science/math and contributing to innovation",
       "💼 Running a successful business or managing money well",
-      "❤️ Helping others by teaching, treating, or guiding them",
+      "❤️ Helping people by teaching, treating, or guiding them",
     ],
   },
   {
@@ -493,6 +506,6 @@ export const graduate_questions = [
     prompt:
       "Lastly, if you had no limitations — what kind of work would you love to do every day? (e.g., help people, solve problems, build systems, create ideas, travel, learn tech, etc.)",
     name: "ideal_work_no_limitations",
-    options: [],
+    //options: [],
   },
 ];

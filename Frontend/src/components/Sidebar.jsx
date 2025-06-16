@@ -99,16 +99,9 @@ const Sidebar = () => {
     },
   ];
 
-  const today = [
-    "React frontend setup guide",
-    "Remove back pocket",
-    "Digital Signatures and Integrit",
-    "Brain Tumor Segmentation Re",
-    "Interesting Thank You Ideas",
-    "Rephrasing Model Names",
-  ];
+  const today = [];
 
-  const yesterday = ["Image creation request", "Transfer Functions in DFA"];
+  const yesterday = [];
 
   return (
     <div
