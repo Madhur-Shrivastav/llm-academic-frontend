@@ -1,10 +1,14 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import html2pdf from "html2pdf.js";
 
 const Result = () => {
   const [profileData, setProfileData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [isGeneratingReport, setIsGeneratingReport] = useState(false);
 
   useEffect(() => {
     try {
@@ -74,6 +78,138 @@ const Result = () => {
     potential_career_paths && potential_career_paths.length > 0
       ? potential_career_paths[0].path
       : "Not specified";
+
+  async function downloadReport() {
+    const storedUser = localStorage.getItem("user");
+    const parsedUser = JSON.parse(storedUser);
+    const userId = parsedUser?.id;
+
+    if (!userId) {
+      alert("User ID not found. Please log in again.");
+      return;
+    }
+
+    setIsGeneratingReport(true);
+
+    try {
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}report/generate/${userId}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "text/html",
+          },
+        }
+      );
+
+      if (!response.ok) {
+        let errorDetail = `HTTP error! status: ${response.status}`;
+        try {
+          const errorJson = await response.json();
+          errorDetail = errorJson.detail || errorDetail;
+        } catch (e) {
+          console.log("Failed to parse error response:", e);
+        }
+        throw new Error(errorDetail);
+      }
+
+      const html = await response.text();
+
+      const fixedHtml = html.replace(
+        "</body>",
+        `<style>
+  @import url('https://fonts.googleapis.com/css2?family=Aptos+Display&display=swap');
+
+  body {
+    background-color: #FEF9C3 !important;
+    font-family: 'Aptos Display', Arial, sans-serif;
+    padding: 40px;
+    color: #1F2937;
+    line-height: 1.6;
+  }
+
+  header {
+    border-bottom: 2px solid #e5e5e5;
+    padding-bottom: 10px;
+    margin-bottom: 30px;
+  }
+
+  h1 {
+    font-size: 2.5rem;
+    margin-bottom: 0;
+    color: #111827;
+  }
+
+  h2 {
+    font-size: 2rem;
+    margin-top: 20px;
+    color: #374151;
+  }
+
+  h3 {
+    font-size: 1.5rem;
+    margin-top: 20px;
+    color: #4B5563;
+  }
+
+  p {
+    margin-bottom: 12px;
+  }
+
+  ul {
+    margin-left: 1.5rem;
+    margin-bottom: 20px;
+  }
+
+  li {
+    margin-bottom: 6px;
+  }
+</style>
+</body>`
+      );
+
+      // Create iframe
+      const iframe = document.createElement("iframe");
+      iframe.style.position = "absolute";
+      iframe.style.left = "-9999px";
+      iframe.style.width = "1000px";
+      iframe.style.height = "1200px";
+      document.body.appendChild(iframe);
+
+      const doc = iframe.contentDocument || iframe.contentWindow.document;
+      doc.open();
+      doc.write(fixedHtml);
+      doc.close();
+
+      // Wait for render
+      await new Promise((resolve) => setTimeout(resolve, 500));
+
+      const content = doc.body;
+
+      await html2pdf()
+        .set({
+          margin: [10, 10],
+          filename: `career_report_${userId}.pdf`,
+          html2canvas: { scale: 2, useCORS: true },
+          jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
+        })
+        .from(content)
+        .save();
+
+      document.body.removeChild(iframe);
+      toast.success("Report downloaded successfully.", { autoClose: 2000 });
+    } catch (error) {
+      console.error("Failed to download report:", error);
+      let errorMessage = `Error downloading report: ${error.message}`;
+      if (error.message.includes("CORS") || error.name === "TypeError") {
+        errorMessage =
+          "Network error: Unable to download report. Please check your internet connection and try again.";
+      }
+      toast.error(errorMessage);
+    } finally {
+      setIsGeneratingReport(false);
+    }
+  }
 
   return (
     <div className="min-h-screen w-full flex flex-col items-center justify-start bg-white pt-12 md:pt-24 pb-12 font-poppins px-5 sm:px-8 lg:px-16">
@@ -175,16 +311,19 @@ const Result = () => {
         </div>
 
         <p className="text-gray-700 text-base sm:text-lg leading-relaxed text-center">
-          If you need any further assistance, feel free to talk to our{" "}
-          <span className="font-semibold text-yellow-600">career expert!</span>
+          Still have questions or want to explore more?{" "}
+          <Link to="/chat" className="font-semibold text-yellow-600">
+            Just continue to ask.
+          </Link>
         </p>
 
         <div className="mt-8 text-center">
           <button
-            onClick={() => navigate("/chat")}
+            disabled={isGeneratingReport}
+            onClick={downloadReport}
             className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105"
           >
-            Go to Chat with Career Expert
+            {isGeneratingReport ? "Downloading..." : "Download Final Report"}
           </button>
         </div>
       </div>

@@ -2,32 +2,34 @@ import { useState } from "react";
 import { FaRegFileAlt, FaRegBookmark } from "react-icons/fa";
 import { RiAiGenerate2 } from "react-icons/ri";
 import { IoChevronBack, IoChevronForward } from "react-icons/io5";
+import { toast } from "react-toastify";
+import html2pdf from "html2pdf.js";
 
 const Sidebar = () => {
   const [selectedModel, setSelectedModel] = useState("TrueYou Careers");
   const [isCollapsed, setIsCollapsed] = useState(true);
   const [isGeneratingReport, setIsGeneratingReport] = useState(false);
 
-  const downloadReport = async () => {
+  async function downloadReport() {
     const storedUser = localStorage.getItem("user");
     const parsedUser = JSON.parse(storedUser);
+    const userId = parsedUser?.id;
 
-    const userId = parsedUser.id;
     if (!userId) {
       alert("User ID not found. Please log in again.");
       return;
     }
 
     setIsGeneratingReport(true);
+
     try {
       const response = await fetch(
         `${import.meta.env.VITE_API_URL}report/generate/${userId}`,
         {
           method: "GET",
-          // Add authorization headers if your endpoint is protected
-          // headers: {
-          //   'Authorization': `Bearer ${localStorage.getItem("token")}`, // Example if token is needed
-          // },
+          headers: {
+            "Content-Type": "text/html",
+          },
         }
       );
 
@@ -37,34 +39,94 @@ const Sidebar = () => {
           const errorJson = await response.json();
           errorDetail = errorJson.detail || errorDetail;
         } catch (e) {
-          // Not a JSON error response, or failed to parse
           console.log("Failed to parse error response:", e);
         }
         throw new Error(errorDetail);
       }
 
-      const blob = await response.blob();
-      const filenameHeader = response.headers.get("Content-Disposition");
-      let filename = `career_report_${userId}.pdf`; // Default filename
+      const html = await response.text();
 
-      if (filenameHeader) {
-        const parts = filenameHeader.split("filename=");
-        if (parts.length > 1) {
-          filename = parts[1].replace(/"/g, ""); // Remove quotes if present
-        }
-      }
+      const fixedHtml = html.replace(
+        "</body>",
+        `<style>
+    @import url('https://fonts.googleapis.com/css2?family=Aptos+Display&display=swap');
+  
+    body {
+      background-color: #FEF9C3 !important;
+      font-family: 'Aptos Display', Arial, sans-serif;
+      padding: 40px;
+      color: #1F2937;
+      line-height: 1.6;
+    }
+  
+    header {
+      border-bottom: 2px solid #e5e5e5;
+      padding-bottom: 10px;
+      margin-bottom: 30px;
+    }
+  
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 0;
+      color: #111827;
+    }
+  
+    h2 {
+      font-size: 2rem;
+      margin-top: 20px;
+      color: #374151;
+    }
+  
+    h3 {
+      font-size: 1.5rem;
+      margin-top: 20px;
+      color: #4B5563;
+    }
+  
+    p {
+      margin-bottom: 12px;
+    }
+  
+    ul {
+      margin-left: 1.5rem;
+      margin-bottom: 20px;
+    }
+  
+    li {
+      margin-bottom: 6px;
+    }
+  </style>
+  </body>`
+      );
 
-      const url = window.URL.createObjectURL(blob);
-      const link = document.createElement("a");
-      link.href = url;
-      link.setAttribute("download", filename);
-      document.body.appendChild(link);
-      link.click();
+      const iframe = document.createElement("iframe");
+      iframe.style.position = "absolute";
+      iframe.style.left = "-9999px";
+      iframe.style.width = "1000px";
+      iframe.style.height = "1200px";
+      document.body.appendChild(iframe);
 
-      link.parentNode.removeChild(link);
-      window.URL.revokeObjectURL(url);
+      const doc = iframe.contentDocument || iframe.contentWindow.document;
+      doc.open();
+      doc.write(fixedHtml);
+      doc.close();
 
-      alert("Report downloaded successfully."); // Or use a more subtle notification
+      await new Promise((resolve) => setTimeout(resolve, 500));
+
+      const content = doc.body;
+
+      await html2pdf()
+        .set({
+          margin: [10, 10],
+          filename: `career_report_${userId}.pdf`,
+          html2canvas: { scale: 2, useCORS: true },
+          jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
+        })
+        .from(content)
+        .save();
+
+      document.body.removeChild(iframe);
+      toast.success("Report downloaded successfully.", { autoClose: 2000 });
     } catch (error) {
       console.error("Failed to download report:", error);
       let errorMessage = `Error downloading report: ${error.message}`;
@@ -72,11 +134,11 @@ const Sidebar = () => {
         errorMessage =
           "Network error: Unable to download report. Please check your internet connection and try again.";
       }
-      alert(errorMessage);
+      toast.error(errorMessage);
     } finally {
       setIsGeneratingReport(false);
     }
-  };
+  }
 
   const models = [
     {

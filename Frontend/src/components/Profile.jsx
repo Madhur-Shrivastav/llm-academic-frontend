@@ -34,14 +34,28 @@ const Profile = () => {
 
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    const userId = localStorage.getItem("user_id"); // Check for user_id
+  // useEffect(() => {
+  //   const token = localStorage.getItem("token");
+  //   const userData = localStorage.getItem("user");
 
-    if (!token || !userId) {
-      navigate("/auth/login");
-    }
-  }, [navigate]);
+  //   if (!userData) {
+  //     navigate("/auth/login");
+  //     return;
+  //   }
+
+  //   try {
+  //     const parsedUser = JSON.parse(userData);
+  //     if (!parsedUser?.id) {
+  //       navigate("/auth/login");
+  //       return;
+  //     }
+
+  //     setUserId(parsedUser.id);
+  //   } catch (error) {
+  //     console.error("Invalid user data in localStorage:", error);
+  //     navigate("/auth/login");
+  //   }
+  // }, [navigate]);
 
   useEffect(() => {
     const fetchUserData = async () => {

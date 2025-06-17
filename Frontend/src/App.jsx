@@ -9,6 +9,7 @@ import Result from "./components/Result";
 import Questionnaire from "./components/Questionnaire";
 // import ProfileFrontend from "./components/ProfileFrontend";
 import Profile from "./components/Profile";
+import { ToastContainer } from "react-toastify";
 // Removed useEffect for session check
 
 function App() {
@@ -16,6 +17,7 @@ function App() {
 
   return (
     <>
+      <ToastContainer />
       <Routes>
         <Route path="/" element={<Navigate replace to="/auth/signup" />} />{" "}
         {/* Added redirect for root path */}

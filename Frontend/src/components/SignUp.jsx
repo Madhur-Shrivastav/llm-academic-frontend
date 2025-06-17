@@ -1,9 +1,11 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const SignUp = () => {
+  const [loading, setLoading] = useState(false);
   const [grade, setGrade] = useState("");
-
   const options = ["9th or 10th", "11th or 12th", "Graduation"];
 
   const [formData, setFormData] = useState({
@@ -15,8 +17,6 @@ const SignUp = () => {
     password: "",
     profileImage: null,
   });
-
-  console.log(formData);
 
   const handleChange = (name, value) => {
     setFormData((prev) => ({
@@ -40,8 +40,9 @@ const SignUp = () => {
   };
 
   const navigate = useNavigate();
+
   const handleSignUp = async (formData) => {
-    console.log("Signing up with data:", formData);
+    setLoading(true); // disable button
     try {
       const res = await fetch(`${import.meta.env.VITE_API_URL}auth/signup`, {
         method: "POST",
@@ -54,20 +55,36 @@ const SignUp = () => {
           contact: formData.contact,
         }),
       });
+
       const data = await res.json();
+
       if (!res.ok) {
-        throw new Error(data.detail || "Login failed");
+        if (data.detail === "Email already registered") {
+          toast.error("Email already registered. Please log in instead.", {
+            autoClose: 3000,
+          });
+        } else {
+          toast.error(data.detail || "Signup failed", { autoClose: 3000 });
+        }
+        return;
       }
-      console.log(data);
+
+      toast.success("Signup successful!", { autoClose: 2000 });
+
       localStorage.setItem("user", JSON.stringify(data));
       sessionStorage.setItem(
         "education_level",
         JSON.stringify(data.education_level)
       );
-      console.log(data);
-      navigate("/welcome");
+
+      setTimeout(() => {
+        navigate("/welcome");
+      }, 2000);
     } catch (error) {
       console.error("Signup error:", error);
+      toast.error("Network or server error", { autoClose: 3000 });
+    } finally {
+      setLoading(false); // re-enable button
     }
   };
 
@@ -82,6 +99,7 @@ const SignUp = () => {
         onSubmit={handleSubmit}
         className="bg-white flex flex-col gap-8 rounded-2xl w-full max-w-3xl p-6 sm:p-10 shadow-xl"
       >
+        <ToastContainer />
         <div className="flex flex-col items-center text-center">
           <img
             src="/public/logo.jpg"
@@ -103,26 +121,26 @@ const SignUp = () => {
         </div>
 
         <div className="grid sm:grid-cols-2 gap-4">
-          {[
-            { label: "First Name", name: "first_name", type: "text" },
-            { label: "Last Name", name: "last_name", type: "text" },
-            { label: "Email", name: "email", type: "email" },
-            { label: "Contact No.", name: "contact", type: "text" },
-          ].map(({ label, name, type }) => (
-            <label key={name} className="relative w-full">
-              <input
-                type={type}
-                name={name}
-                value={formData[name]}
-                onChange={(e) => handleChange(name, e.target.value)}
-                className="peer block w-full p-3 text-sm text-black bg-yellow-100 border border-white rounded-md focus:outline-none"
-                required
-              />
-              <span className="absolute left-3 top-3 bg-yellow-100 text-lg text-black transition-all duration-300 peer-focus:text-sm peer-focus:-translate-y-5 peer-focus:px-1 peer-valid:text-sm peer-valid:-translate-y-5 peer-valid:px-1">
-                {label}
-              </span>
-            </label>
-          ))}
+          {[{ label: "First Name", name: "first_name" },
+          { label: "Last Name", name: "last_name" },
+          { label: "Email", name: "email", type: "email" },
+          { label: "Contact No.", name: "contact" }].map(
+            ({ label, name, type = "text" }) => (
+              <label key={name} className="relative w-full">
+                <input
+                  type={type}
+                  name={name}
+                  value={formData[name]}
+                  onChange={(e) => handleChange(name, e.target.value)}
+                  className="peer block w-full p-3 text-sm text-black bg-yellow-100 border border-white rounded-md focus:outline-none"
+                  required
+                />
+                <span className="absolute left-3 top-3 bg-yellow-100 text-lg text-black transition-all duration-300 peer-focus:text-sm peer-focus:-translate-y-5 peer-focus:px-1 peer-valid:text-sm peer-valid:-translate-y-5 peer-valid:px-1">
+                  {label}
+                </span>
+              </label>
+            )
+          )}
         </div>
 
         <label className="relative w-full">
@@ -150,11 +168,10 @@ const SignUp = () => {
                   setGrade(option);
                   setFormData((prevData) => ({ ...prevData, grade: option }));
                 }}
-                className={`px-4 py-2 rounded-lg font-semibold text-sm sm:text-base transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-300 ${
-                  grade === option
-                    ? "bg-blue-600 text-white"
-                    : "border border-blue-500 text-blue-500 hover:scale-105 hover:border-blue-600 hover:text-blue-600"
-                }`}
+                className={`px-4 py-2 rounded-lg font-semibold text-sm sm:text-base transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-300 ${grade === option
+                  ? "bg-blue-600 text-white"
+                  : "border border-blue-500 text-blue-500 hover:scale-105 hover:border-blue-600 hover:text-blue-600"
+                  }`}
               >
                 {option}
               </button>
@@ -184,12 +201,15 @@ const SignUp = () => {
             />
           )}
         </div>
-
         <button
           type="submit"
-          className="bg-yellow-500 hover:bg-yellow-600 p-3 rounded-full text-white font-bold text-base transition-transform hover:scale-105 w-full"
+          disabled={loading}
+          className={`p-3 rounded-full text-white font-bold text-base transition-transform w-full ${loading
+              ? "bg-gray-400 cursor-not-allowed"
+              : "bg-yellow-500 hover:bg-yellow-600 hover:scale-105"
+            }`}
         >
-          SIGN UP
+          {loading ? "Signing up..." : "SIGN UP"}
         </button>
 
         <p className="text-center text-sm">
