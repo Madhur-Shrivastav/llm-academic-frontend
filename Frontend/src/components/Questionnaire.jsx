@@ -470,22 +470,51 @@ const Questionnaire = () => {
       };
     });
   };
+  const shouldRenderQuestion = (name) => {
+    const conditions = {
+      reason_for_misalignment_multiple:
+        formData["stream_alignment"] === "❌ No — I feel off-track or unsure",
+      unsure_reason_multiple:
+        formData["confidence_stream_choice"] ===
+        "❌ No, I feel unsure or confused",
+
+      comm_people_work_preference:
+        formData["preferred_work_category_single"] ===
+        "🗣 Communication & People Interaction",
+      project_mgmt_work_preference:
+        formData["preferred_work_category_single"] ===
+        "📂 Project Management / Documentation / Coordination",
+      data_analysis_work_preference:
+        formData["preferred_work_category_single"] ===
+        "📊 Data Handling / Analysis",
+      tech_digital_work_preference:
+        formData["preferred_work_category_single"] ===
+        "💻 Tech / Coding / Digital Product Roles",
+    };
+
+    return conditions[name] === undefined ? true : conditions[name];
+  };
 
   // console.log(formData)
   const isFormComplete = () => {
-    return Object.keys(formData)
-      .filter((key) => key !== "user_id")
-      .every((key) => {
-        const val = formData[key];
-        if (
-          val &&
-          typeof val === "object" &&
-          val.value?.toLowerCase().includes("other")
-        ) {
-          return val.otherText?.trim().length > 0;
-        }
-        return val !== "" && val !== null && val !== undefined;
-      });
+    return questions.every((q) => {
+      const key = q.name;
+
+      // Handle conditional rendering logic
+      if (!shouldRenderQuestion(key)) return true;
+
+      const val = formData[key];
+
+      if (
+        val &&
+        typeof val === "object" &&
+        val.value?.toLowerCase().includes("other")
+      ) {
+        return val.otherText?.trim().length > 0;
+      }
+
+      return val !== "" && val !== null && val !== undefined;
+    });
   };
 
   const flattenAnswers = (answers) => {
@@ -618,16 +647,7 @@ const Questionnaire = () => {
 
       <div className="w-full max-w-3xl space-y-6">
         {questions.map(({ title, prompt, options, name }) => {
-          if (
-            (name === "reason_for_misalignment_multiple" &&
-              formData["stream_alignment"] !==
-                "❌ No — I feel off-track or unsure") ||
-            (name === "unsure_reason_multiple" &&
-              formData["confidence_stream_choice"] !==
-                "❌ No, I feel unsure or confused")
-          ) {
-            return null;
-          }
+          if (!shouldRenderQuestion(name)) return null;
 
           return (
             <QuestionCard
@@ -643,9 +663,7 @@ const Questionnaire = () => {
         })}
 
         <button
-          className={` hover:bg-yellow-600 p-3 rounded-full text-white font-bold text-base transition-transform hover:scale-105 w-full ${
-            loading ? "bg-yellow-400" : "bg-yellow-500"
-          }`}
+          className="bg-yellow-500 hover:bg-yellow-600 p-3 rounded-full text-white font-bold text-base transition-transform hover:scale-105 w-full"
           onClick={handleSubmit}
           disabled={loading}
         >

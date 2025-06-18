@@ -167,7 +167,7 @@ const ChatArea = () => {
                     localStorage.removeItem("loginTime");
                     navigate("/auth/login");
                   }}
-                  className="px-6 py-3 hover:bg-red-600 text-white text-base rounded-b-xl transition-all duration-200 flex items-center gap-2"
+                  className="px-6 py-3 hover:bg-red-600 text-white text-base rounded-xl transition-all duration-200 flex items-center gap-2"
                 >
                   <CiLogout />
                   Logout

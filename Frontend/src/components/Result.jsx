@@ -114,61 +114,186 @@ const Result = () => {
       }
 
       const html = await response.text();
-
-      const fixedHtml = html.replace(
-        "</body>",
-        `<style>
-  @import url('https://fonts.googleapis.com/css2?family=Aptos+Display&display=swap');
-
-  body {
-    background-color: #FEF9C3 !important;
-    font-family: 'Aptos Display', Arial, sans-serif;
-    padding: 40px;
-    color: #1F2937;
-    line-height: 1.6;
-  }
-
-  header {
-    border-bottom: 2px solid #e5e5e5;
-    padding-bottom: 10px;
-    margin-bottom: 30px;
-  }
-
-  h1 {
-    font-size: 2.5rem;
-    margin-bottom: 0;
-    color: #111827;
-  }
-
-  h2 {
-    font-size: 2rem;
-    margin-top: 20px;
-    color: #374151;
-  }
-
-  h3 {
-    font-size: 1.5rem;
-    margin-top: 20px;
-    color: #4B5563;
-  }
-
-  p {
-    margin-bottom: 12px;
-  }
-
-  ul {
-    margin-left: 1.5rem;
-    margin-bottom: 20px;
-  }
-
-  li {
-    margin-bottom: 6px;
-  }
-</style>
-</body>`
+      console.log(html);
+      const logoUrl = "/public/logo2.jpg";
+      const modifiedHtml = html.replace(
+        /<h1>(.*?)<\/h1>/i,
+        `<h1 class="heading-with-logo"><img src="${logoUrl}" alt="Logo" class="logo" /> $1</h1>`
       );
 
-      // Create iframe
+      const fixedHtml = modifiedHtml.includes("<body>")
+        ? modifiedHtml
+            .replace("<body>", '<body><div class="report-container">')
+            .replace(
+              "</body>",
+              `
+        </div>
+        <style>
+          @import url('https://fonts.googleapis.com/css2?family=Inter&display=swap');
+
+          body {
+            margin: 0;
+            padding: 30px;
+            background-color: #0047AB;
+            font-family: 'Aptos Display', Arial, sans-serif;;
+            color: #1F2937;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+          }
+
+          .heading-with-logo {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+}
+
+.heading-with-logo .logo {
+  width: 60px;
+  height: 80px;
+  object-fit: contain;
+}
+
+
+          .report-container {
+            max-width: 700px;
+            margin: auto;
+            background-color: #ffffff;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            page-break-after: auto;
+          }
+
+          .report-container > * {
+            break-inside: avoid;
+            page-break-inside: avoid;
+          }
+
+          h1 {
+            font-size: 2rem;
+            text-align: center;
+            color: #1D4ED8;
+            margin-bottom: 20px;
+          }
+
+          h2 {
+            font-size: 1.5rem;
+            color: #111827;
+            margin-top: 20px;
+          }
+
+          h3 {
+            font-size: 1.25rem;
+            margin-top: 16px;
+            color: #374151;
+          }
+
+          p {
+            margin: 16px 0;
+            font-size: 1rem;
+            color: #374151;
+          }
+
+          ul {
+            margin-left: 1.5rem;
+            margin-bottom: 12px;
+          }
+
+          li {
+            margin-bottom: 6px;
+          }
+            
+        </style>
+      </body>`
+            )
+        : `
+    <html>
+      <head>
+        <style>
+          @import url('https://fonts.googleapis.com/css2?family=Inter&display=swap');
+
+          body {
+            margin: 0;
+            padding: 30px;
+            background-color: #0047AB;
+            font-family: 'Aptos Display', Arial, sans-serif;
+            color: #1F2937;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+          }
+
+          .heading-with-logo {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+}
+
+.heading-with-logo .logo {
+  width: 60px;
+  height: 80px;
+  object-fit: contain;
+}
+
+
+          .report-container {
+            max-width: 700px;
+            margin: auto;
+            background-color: #ffffff;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            page-break-after: auto;
+          }
+
+          .report-container > * {
+            break-inside: avoid;
+            page-break-inside: avoid;
+          }
+
+
+          h1 {
+            font-size: 2rem;
+            text-align: center;
+            color: #1D4ED8;
+            margin-bottom: 20px;
+          }
+
+          h2 {
+            font-size: 1.5rem;
+            color: #111827;
+            margin-top: 20px;
+          }
+
+          h3 {
+            font-size: 1.25rem;
+            margin-top: 16px;
+            color: #374151;
+          }
+
+          p {
+            margin: 16px 0;
+            font-size: 1rem;
+            color: #374151;
+          }
+
+          ul {
+            margin-left: 1.5rem;
+            margin-bottom: 12px;
+          }
+
+          li {
+            margin-bottom: 6px;
+          }
+        </style>
+      </head>
+      <body>
+        <div class="report-container">
+          ${modifiedHtml}
+        </div>
+      </body>
+    </html>
+    `;
+
       const iframe = document.createElement("iframe");
       iframe.style.position = "absolute";
       iframe.style.left = "-9999px";
@@ -181,17 +306,17 @@ const Result = () => {
       doc.write(fixedHtml);
       doc.close();
 
-      // Wait for render
       await new Promise((resolve) => setTimeout(resolve, 500));
 
       const content = doc.body;
 
       await html2pdf()
         .set({
-          margin: [10, 10],
+          margin: [0, 0],
           filename: `career_report_${userId}.pdf`,
           html2canvas: { scale: 2, useCORS: true },
           jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
+          pagebreak: { mode: ["avoid-all", "css", "legacy"] }, // Fix content cut
         })
         .from(content)
         .save();
@@ -308,6 +433,24 @@ const Result = () => {
               )}
             </div>
           )}
+          <div className="bg-blue-50 border border-blue-200 text-blue-900 p-6 rounded-xl hover:shadow-lg transition-shadow duration-300 cursor-default mt-2 mb-5">
+            <h3 className="text-xl font-semibold mb-1">
+              📞 Confusion हटाओ, Clarity लाओ
+            </h3>
+            <p className="text-sm mb-2">
+              Talk to our{" "}
+              <span className="font-medium">Academic Counseling Expert</span>
+            </p>
+            <p className="text-base font-semibold">
+              Call us at:{" "}
+              <a
+                href="tel:7454848040"
+                className="text-blue-600 hover:underline"
+              >
+                7454848040
+              </a>
+            </p>
+          </div>
         </div>
 
         <p className="text-gray-700 text-base sm:text-lg leading-relaxed text-center">
