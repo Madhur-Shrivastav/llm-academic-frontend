@@ -15,7 +15,7 @@ const SignUp = () => {
     contact: "",
     grade: grade,
     password: "",
-    profileImage: null,
+    //profileImage: null,
   });
 
   const handleChange = (name, value) => {
@@ -25,19 +25,19 @@ const SignUp = () => {
     }));
   };
 
-  const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setFormData((prev) => ({
-          ...prev,
-          profileImage: reader.result,
-        }));
-      };
-      reader.readAsDataURL(file);
-    }
-  };
+  // const handleFileChange = (e) => {
+  //   const file = e.target.files[0];
+  //   if (file) {
+  //     const reader = new FileReader();
+  //     reader.onloadend = () => {
+  //       setFormData((prev) => ({
+  //         ...prev,
+  //         profileImage: reader.result,
+  //       }));
+  //     };
+  //     reader.readAsDataURL(file);
+  //   }
+  // };
 
   const navigate = useNavigate();
 
@@ -180,7 +180,7 @@ const SignUp = () => {
           </div>
         </div>
 
-        <div className="bg-yellow-100 rounded-lg p-4 flex flex-col items-start gap-2">
+        {/* <div className="bg-yellow-100 rounded-lg p-4 flex flex-col items-start gap-2">
           <label
             htmlFor="file"
             className="text-black font-medium cursor-pointer"
@@ -201,7 +201,7 @@ const SignUp = () => {
               className="w-24 h-24 object-cover rounded-full mt-2"
             />
           )}
-        </div>
+        </div> */}
 
         <button
           type="submit"
