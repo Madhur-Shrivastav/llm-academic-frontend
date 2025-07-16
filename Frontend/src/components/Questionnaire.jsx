@@ -87,8 +87,6 @@ const Questionnaire = () => {
     }));
   };
 
-  console.log(formData);
-
   const isFormComplete = () => {
     return questions.every((q) => {
       if (q.depends_on) {
@@ -203,8 +201,6 @@ const Questionnaire = () => {
         raw_responses: answers,
         questions_data: questionsData,
       };
-
-      console.log("Payload:", payload);
 
       const response = await fetch(
         `${import.meta.env.VITE_API_URL}profile/questionnaire`,

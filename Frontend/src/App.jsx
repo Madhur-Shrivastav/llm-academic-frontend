@@ -1,4 +1,4 @@
-import { Route, Routes, Navigate } from "react-router-dom"; // Added Navigate
+import { Route, Routes, Navigate } from "react-router-dom";
 import Sidebar from "./components/Sidebar";
 import ChatArea from "./components/ChatArea";
 import SignUp from "./components/SignUp";
@@ -7,22 +7,17 @@ import Login from "./components/Login";
 import Welcome from "./components/Welcome";
 import Result from "./components/Result";
 import Questionnaire from "./components/Questionnaire";
-// import ProfileFrontend from "./components/ProfileFrontend";
 import Profile from "./components/Profile";
 import { ToastContainer } from "react-toastify";
-// Removed useEffect for session check
 
 function App() {
-  // Removed useNavigate and checkLocalStorageExpiry logic from here
-
   return (
     <>
       <ToastContainer />
       <Routes>
         <Route path="/" element={<Navigate replace to="/auth/signup" />} />{" "}
-        {/* Added redirect for root path */}
         <Route
-          path="/chat" // Changed from "/" to "/chat"
+          path="/chat"
           element={
             <div className="flex h-screen overflow-hidden">
               <Sidebar />
@@ -39,7 +34,6 @@ function App() {
         <Route path="/result" element={<Result />} />
         <Route path="/profile/questionnaire" element={<Questionnaire />} />
         <Route path="/profile" element={<Profile />} />
-        {/* <Route path="/profileFrontend" element={<ProfileFrontend />} /> */}
       </Routes>
     </>
   );

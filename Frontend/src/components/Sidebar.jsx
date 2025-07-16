@@ -45,7 +45,6 @@ const Sidebar = () => {
       }
 
       const html = await response.text();
-      console.log(html);
       const logoUrl = "/public/logo2.jpg";
       const modifiedHtml = html.replace(
         /<h1>(.*?)<\/h1>/i,

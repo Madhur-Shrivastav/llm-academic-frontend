@@ -7,8 +7,6 @@ const ConfirmSignUp = () => {
     code: "",
   });
 
-  console.log(formData);
-
   const handleChange = (name, value) => {
     setFormData((prev) => ({
       ...prev,
@@ -19,8 +17,6 @@ const ConfirmSignUp = () => {
   const navigate = useNavigate();
   const handleConfirmation = async (formData) => {
     try {
-      console.log("Confirming data:", formData);
-
       navigate("/login");
     } catch (error) {
       console.error("Confirmation error:", error);
