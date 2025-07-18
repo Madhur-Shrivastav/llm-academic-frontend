@@ -1,361 +1,321 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 
 const Profile = () => {
-  const DUMMY_API = {
-    profile: "https://dummyjson.com/c/24af-a3a4-4809-9dcb", // get request dummy api
-    academicProgress: "https://dummyjson.com/c/ded0-30c0-40ac-866c",
-    updateProfile: "https://dummyjson.com/c/bc7e-64fb-44f0-893b", // put request dummy api
-  };
-
-  const [userProfile, setUserProfile] = useState({
-    first_name: "First Name",
-    last_name: "Last Name",
-    email: "name@gmail.com",
-    contact: "+91 9419xxxx20",
-    grade: "11th or 12th",
-    profileImage: "/public/image.png",
-  });
-
-  const [academicProgress, setAcademicProgress] = useState({
-    questionnairesCompleted: 0,
-    totalQuestionnaires: 3,
-    careerPathProgress: 0,
-  });
-
+  const [user, setUser] = useState(null);
+  const [LLMProfile, setLLMProfile] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
-  const [isEditing, setIsEditing] = useState(false);
-  const [editedProfile, setEditedProfile] = useState({});
-  const [updateSuccess, setUpdateSuccess] = useState(false);
-  const [updateLoading, setUpdateLoading] = useState(false);
-
   const navigate = useNavigate();
 
-  // useEffect(() => {
-  //   const token = localStorage.getItem("token");
-  //   const userData = localStorage.getItem("user");
-
-  //   if (!userData) {
-  //     navigate("/auth/login");
-  //     return;
-  //   }
-
-  //   try {
-  //     const parsedUser = JSON.parse(userData);
-  //     if (!parsedUser?.id) {
-  //       navigate("/auth/login");
-  //       return;
-  //     }
-
-  //     setUserId(parsedUser.id);
-  //   } catch (error) {
-  //     console.error("Invalid user data in localStorage:", error);
-  //     navigate("/auth/login");
-  //   }
-  // }, [navigate]);
-
   useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-        // console.log('Fetching user profile from:', DUMMY_API.profile);
-        const profileResponse = await axios.get(DUMMY_API.profile);
-        // console.log('Fetching academic progress from:', DUMMY_API.academicProgress);
-        const progressResponse = await axios.get(DUMMY_API.academicProgress);
-        // Transform/ structure the profile data according to backend response
-        // console.log('Profile data fetched:', profileResponse.data);
-        const mockProfile = {
-          first_name: profileResponse.data.first_name,
-          last_name: profileResponse.data.last_name,
-          email: profileResponse.data.email,
-          contact: profileResponse.data.contact,
-          grade: profileResponse.data.grade,
-          profileImage: "/public/image.png",
-        };
-
-        // Transform progress data
-        const completedTasks = progressResponse.data.filter(
-          (todo) => todo.completed
-        ).length;
-        const totalTasks = progressResponse.data.length;
-        const mockProgress = {
-          questionnairesCompleted: completedTasks,
-          totalQuestionnaires: totalTasks,
-          careerPathProgress: Math.round((completedTasks / totalTasks) * 100),
-        };
-
-        // console.log('Transformed profile data:', mockProfile);
-        // console.log('Transformed progress data:', mockProgress);
-        setUserProfile(mockProfile);
-        setEditedProfile(mockProfile);
-        setAcademicProgress(mockProgress);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-        setError("Failed to load user data. Please try again.");
-      } finally {
-        setLoading(false);
+    try {
+      const user = JSON.parse(localStorage.getItem("user"));
+      if (user) {
+        setUser(user);
+        if (user.llm_profile) {
+          setLLMProfile(user.llm_profile);
+        } else {
+          setLLMProfile(JSON.parse(localStorage.getItem("llm_profile")));
+        }
+      } else {
+        setError("No profile data found. Please complete the questionnaire.");
       }
-    };
-
-    fetchUserData();
+    } catch (e) {
+      console.error("Failed to parse profile data from session storage", e);
+      setError("Failed to load profile data.");
+    } finally {
+      setLoading(false);
+    }
   }, []);
 
-  const handleEditToggle = () => {
-    setIsEditing(!isEditing);
-    setEditedProfile(userProfile);
-    setUpdateSuccess(false);
-  };
+  // console.log(user);
+  // console.log(LLMProfile);
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setEditedProfile((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
-  const handleProfileUpdate = async (e) => {
-    e.preventDefault();
+  if (loading) {
+    return <div> Loading...</div>;
+  }
 
-    try {
-      setUpdateLoading(true);
-      setError(null);
-      await axios.put(DUMMY_API.updateProfile, editedProfile);
-
-      setUserProfile(editedProfile);
-      setUpdateSuccess(true);
-
-      setTimeout(() => {
-        setIsEditing(false);
-        setUpdateSuccess(false);
-      }, 2000);
-    } catch (error) {
-      console.error("Error updating profile:", error);
-      setError("Failed to update profile. Please try again.");
-    } finally {
-      setUpdateLoading(false);
-    }
-  };
   return (
     <div className="min-h-screen bg-white text-black p-4 sm:p-8">
-      {error && (
-        <div className="max-w-3xl mx-auto mb-4 bg-red-50 border border-red-200 text-red-700 p-4 rounded-lg">
-          <p className="font-medium">Error: {error}</p>
-        </div>
-      )}
-
-      {updateSuccess && (
-        <div className="max-w-3xl mx-auto mb-4 bg-green-50 border border-green-200 text-green-700 p-4 rounded-lg">
-          <p className="font-medium">Profile updated successfully!</p>
-        </div>
-      )}
-
-      <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-xl p-6 sm:p-10">
-        <div className="flex flex-col items-center mb-8">
+      <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-xl p-6 sm:p-10 space-y-8">
+        <div className="flex flex-col items-center">
           <img
-            src={userProfile.profileImage}
+            src="/public/image.png"
             alt="Profile"
             className="w-32 h-32 rounded-full object-cover border-4 border-yellow-500 mb-4"
-            onError={(e) => {
-              e.target.onerror = null;
-              e.target.src = "https://via.placeholder.com/150?text=Profile";
-            }}
           />
-          {!isEditing ? (
-            <h1 className="text-3xl font-bold text-blue-600">
-              {userProfile.first_name} {userProfile.last_name}
-            </h1>
-          ) : (
-            <div className="flex flex-col items-center space-y-2 w-full max-w-md">
-              <div className="flex space-x-2 w-full">
-                <input
-                  type="text"
-                  name="first_name"
-                  value={editedProfile.first_name}
-                  onChange={handleInputChange}
-                  className="w-1/2 p-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
-                  placeholder="First Name"
-                />
-                <input
-                  type="text"
-                  name="last_name"
-                  value={editedProfile.last_name}
-                  onChange={handleInputChange}
-                  className="w-1/2 p-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
-                  placeholder="Last Name"
-                />
+          <h1 className="text-3xl font-bold text-blue-600">{user.full_name}</h1>
+        </div>
+
+        <div className="bg-yellow-50 rounded-xl p-6 border border-yellow-200 w-full">
+          <div className="flex justify-center items-center mb-4">
+            <h2 className="text-[22px] font-semibold text-yellow-700">
+              Personal Information
+            </h2>
+          </div>
+          <div className="space-y-3">
+            <p className="text-[20.5px] font-semibold text-yellow-700">
+              Email:
+              <span className="text-gray-700"> {user.email}</span>
+            </p>
+            <p className="text-[20.5px] font-semibold text-yellow-700">
+              Contact:
+              <span className="text-gray-700"> {user.contact}</span>
+            </p>
+            <p className="text-[20.5px] font-semibold text-yellow-700">
+              Grade:
+              <span className="text-gray-700"> {user.education_level}</span>
+            </p>
+          </div>
+        </div>
+
+        {user.education_level === "9th or 10th" &&
+          LLMProfile.profile_in_a_gist && (
+            <div className="bg-indigo-50 rounded-xl p-6 border border-indigo-300 hover:shadow-lg transition-shadow duration-300 cursor-default">
+              <h3 className="text-[34px] font-bold text-indigo-700 mb-3 text-center underline">
+                Your Progress So far
+              </h3>
+              <div className="mb-4">
+                <h4 className="text-[26.5px] font-semibold text-indigo-600 mb-2 underline">
+                  Subjects you are good at:
+                </h4>
+                <ul className="list-disc list-inside text-gray-800 space-y-1 text-[22px]">
+                  {LLMProfile.profile_in_a_gist.subjects_good_at.map(
+                    (subject, index) => (
+                      <li key={index}>{subject}</li>
+                    )
+                  )}
+                </ul>
+              </div>
+
+              <div className="mb-4">
+                <h4 className="text-[26.5px] font-semibold text-indigo-600 mb-2 underline">
+                  Natural Calling:
+                </h4>
+                <ul className="list-disc list-inside text-gray-800 space-y-1 text-[22px]">
+                  <li>{LLMProfile.profile_in_a_gist.natural_calling}</li>
+                </ul>
+              </div>
+
+              <div className="mb-4">
+                <h4 className="text-[26.5px] font-semibold text-indigo-600 mb-2 underline">
+                  Naturally inclined to pursue:
+                </h4>
+                <ul className="list-disc list-inside text-gray-800 space-y-1 text-[22px]">
+                  {LLMProfile.profile_in_a_gist.inclined_to_pursue.map(
+                    (inclination, index) => (
+                      <li key={index}>{inclination}</li>
+                    )
+                  )}
+                </ul>
+              </div>
+
+              <div className="mb-4">
+                <h4 className="text-[26.5px] font-semibold text-indigo-600 mb-2 underline">
+                  Roadblocks:
+                </h4>
+                <ul className="list-disc list-inside text-gray-800 space-y-1 text-[22px]">
+                  {LLMProfile.profile_in_a_gist.roadblocks.map(
+                    (roadblock, index) => (
+                      <li key={index}>{roadblock}</li>
+                    )
+                  )}
+                </ul>
+              </div>
+
+              <div className="mb-4">
+                <p className="text-gray-800 text-base sm:text-[22px] leading-relaxed">
+                  <strong className="text-[26.5px] font-semibold text-indigo-600 mb-2 underline">
+                    Encouragement:
+                  </strong>{" "}
+                  {LLMProfile.profile_in_a_gist.encouragement}
+                </p>
               </div>
             </div>
           )}
-        </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-          <div className="bg-yellow-50 rounded-xl p-6 border border-yellow-200">
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-lg font-semibold text-gray-800">
-                Personal Information
-              </h2>
-              {!isEditing ? (
-                <button
-                  onClick={handleEditToggle}
-                  className="text-blue-600 hover:text-blue-800 text-sm font-medium"
-                >
-                  Edit Profile
-                </button>
-              ) : null}
+        {user.education_level === "11th or 12th" &&
+          LLMProfile.profile_in_a_gist && (
+            <div className="bg-indigo-50 rounded-xl p-6 border border-indigo-300 hover:shadow-lg transition-shadow duration-300 cursor-default">
+              <h3 className="text-[34px] font-bold text-indigo-700 mb-3 text-center underline">
+                Your Progress So far
+              </h3>
+
+              <div className="mb-4">
+                <h4 className="text-[26.5px] font-semibold text-indigo-600 mb-2 underline">
+                  Career Paths:
+                </h4>
+                <ul className="list-disc list-inside text-gray-800 space-y-1 text-[22px]">
+                  {LLMProfile.profile_in_a_gist.career_paths.map(
+                    (path, index) => (
+                      <li key={index}>{path}</li>
+                    )
+                  )}
+                </ul>
+              </div>
+
+              <div className="mb-4">
+                <h4 className="text-[26.5px] font-semibold text-indigo-600 mb-2 underline">
+                  Strengths:
+                </h4>
+                <ul className="list-disc list-inside text-gray-800 space-y-1 text-[22px]">
+                  {LLMProfile.profile_in_a_gist.strengths.map(
+                    (strength, index) => (
+                      <li key={index}>{strength}</li>
+                    )
+                  )}
+                </ul>
+              </div>
+
+              <div className="mb-4">
+                <h4 className="text-[26.5px] font-semibold text-indigo-600 mb-2 underline">
+                  Exams to Consider:
+                </h4>
+                <ul className="list-disc list-inside text-gray-800 space-y-1 text-[22px]">
+                  {LLMProfile.profile_in_a_gist.exams_to_consider.map(
+                    (exam, index) => (
+                      <li key={index}>{exam}</li>
+                    )
+                  )}
+                </ul>
+              </div>
+
+              <div className="mb-4">
+                <p className="text-gray-800 text-base sm:text-[22px] leading-relaxed">
+                  <strong className="text-indigo-600 text-[26.5px] font-semibold underline">
+                    Roadblock:
+                  </strong>{" "}
+                  {LLMProfile.profile_in_a_gist.roadblock}
+                </p>
+              </div>
+
+              <div className="mb-4">
+                <p className="text-gray-800 text-base sm:text-[22px] leading-relaxed">
+                  <strong className="text-indigo-600 text-[26.5px] font-semibold underline">
+                    Suggestion:
+                  </strong>{" "}
+                  {LLMProfile.profile_in_a_gist.suggestion}
+                </p>
+              </div>
+
+              <div>
+                <p className="text-gray-800 text-base sm:text-[22px] leading-relaxed">
+                  <strong className="text-indigo-600 text-[26.5px] font-semibold underline">
+                    Final Note:
+                  </strong>{" "}
+                  {LLMProfile.profile_in_a_gist.final_note}
+                </p>
+              </div>
             </div>
+          )}
+        {user.education_level === "Graduation" && (
+          <>
+            <h1 className="text-3xl sm:text-4xl font-extrabold text-blue-600 mb-10 tracking-wide text-center underline">
+              Your Progress So far
+            </h1>
 
-            {!isEditing ? (
-              <div className="space-y-3">
-                <p className="text-gray-700">
-                  <span className="font-medium">Email:</span>{" "}
-                  {userProfile.email}
-                </p>
-                <p className="text-gray-700">
-                  <span className="font-medium">Contact:</span>{" "}
-                  {userProfile.contact}
-                </p>
-                <p className="text-gray-700">
-                  <span className="font-medium">Grade:</span>{" "}
-                  {userProfile.grade}
+            <div className="space-y-8 mb-12">
+              <div className="bg-yellow-50 rounded-xl p-6 border border-yellow-300 hover:shadow-lg transition-shadow duration-300 cursor-default">
+                <h3 className="text-[30px] font-bold text-yellow-700">
+                  Your Natural Inclination:
+                </h3>
+                <span className="text-gray-800 text-base sm:text-[23px] leading-tight">
+                  {LLMProfile.your_natural_inclination}
+                </span>
+              </div>
+
+              {LLMProfile.careers_that_fit_you_well?.length > 0 && (
+                <div className="bg-blue-50 rounded-xl p-6 border border-blue-300 hover:shadow-lg transition-shadow duration-300 cursor-default">
+                  <h3 className="text-[30px] font-bold text-blue-700 mb-1">
+                    Careers that Fit you well:
+                  </h3>
+                  <ul className="list-disc list-inside text-gray-800 space-y-3">
+                    {LLMProfile.careers_that_fit_you_well.map((step, index) => (
+                      <li key={index} className="text-base sm:text-[23px]">
+                        <span className="capitalize leading-tight font-bold">
+                          {step.split("-")[0]} -
+                        </span>{" "}
+                        <span className="leading-tight">
+                          {step.split("-")[1]}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              <div className="bg-yellow-50 rounded-xl p-6 border border-yellow-300 hover:shadow-lg transition-shadow duration-300 cursor-default">
+                <h3 className="text-[30px] font-bold text-yellow-700">
+                  Your Degree already helps in:
+                </h3>
+                <p className="text-gray-800 text-base sm:text-[23px] leading-tight">
+                  {LLMProfile.your_degree_already_helps}
                 </p>
               </div>
-            ) : (
-              <form onSubmit={handleProfileUpdate} className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Email
-                  </label>
-                  <input
-                    type="email"
-                    name="email"
-                    value={editedProfile.email}
-                    onChange={handleInputChange}
-                    className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
-                    placeholder="Email"
-                  />
-                </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Contact
-                  </label>
-                  <input
-                    type="text"
-                    name="contact"
-                    value={editedProfile.contact}
-                    onChange={handleInputChange}
-                    className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
-                    placeholder="Contact Number"
-                  />
+              {LLMProfile.what_you_can_do_next?.length > 0 && (
+                <div className="bg-green-50 rounded-xl p-6 border border-green-300 hover:shadow-lg transition-shadow duration-300 cursor-default">
+                  <h3 className="text-[30px] font-bold text-green-700 mb-3">
+                    Recommended Next Steps:
+                  </h3>
+                  <ul className="list-disc list-inside text-gray-800 space-y-2">
+                    {LLMProfile.what_you_can_do_next.map((step, index) => (
+                      <li
+                        key={index}
+                        className="text-base sm:text-[23px] leading-tight"
+                      >
+                        <span>{step}</span>
+                      </li>
+                    ))}
+                  </ul>
                 </div>
+              )}
 
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Grade
-                  </label>
-                  <select
-                    name="grade"
-                    value={editedProfile.grade}
-                    onChange={handleInputChange}
-                    className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
-                  >
-                    <option value="9th or 10th">9th or 10th</option>
-                    <option value="11th or 12th">11th or 12th</option>
-                    <option value="Graduation">Graduation</option>
-                  </select>
-                </div>
-
-                <div className="flex space-x-2 pt-2">
-                  <button
-                    type="submit"
-                    className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md transition-colors"
-                    disabled={updateLoading}
-                  >
-                    {updateLoading ? "Updating..." : "Save Changes"}
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={handleEditToggle}
-                    className="bg-gray-200 hover:bg-gray-300 text-gray-800 px-4 py-2 rounded-md transition-colors"
-                  >
-                    Cancel
-                  </button>
-                </div>
-              </form>
-            )}
-          </div>
-
-          <div className="bg-yellow-50 rounded-xl p-6 border border-yellow-200">
-            <h2 className="text-lg font-semibold text-gray-800 mb-2">
-              Academic Progress
-            </h2>
-            {loading ? (
-              <div className="py-4 text-center text-gray-500">Loading...</div>
-            ) : (
-              <div className="space-y-3">
-                <div className="flex justify-between items-center">
-                  <span className="text-gray-700">
-                    Questionnaires Completed
-                  </span>
-                  <span className="font-medium text-blue-600">
-                    {academicProgress.questionnairesCompleted}/
-                    {academicProgress.totalQuestionnaires}
-                  </span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-gray-700">Career Path Progress</span>
-                  <span className="font-medium text-blue-600">
-                    {academicProgress.careerPathProgress}%
-                  </span>
-                </div>
-                <div className="w-full bg-gray-200 rounded-full h-2.5 mt-2">
-                  <div
-                    className="bg-blue-600 h-2.5 rounded-full"
-                    style={{ width: `${academicProgress.careerPathProgress}%` }}
-                  ></div>
-                </div>
+              <div className="bg-yellow-50 rounded-xl p-6 border border-yellow-300 hover:shadow-lg transition-shadow duration-300 cursor-default">
+                <h3 className="text-[30px] font-bold text-yellow-700">
+                  Self Reflection:
+                </h3>
+                <span className="text-gray-800 text-base sm:text-[23px] leading-tight">
+                  {LLMProfile.self_reflection}
+                </span>
               </div>
-            )}
-          </div>
+
+              <div className="bg-red-50 rounded-xl p-6 border border-red-300 hover:shadow-lg transition-shadow duration-300 cursor-default">
+                <h3 className="text-[30px] font-bold text-red-700">
+                  Final Word:
+                </h3>
+                <span className="text-gray-800 text-base sm:text-[23px] leading-tight">
+                  {LLMProfile.final_word}
+                </span>
+              </div>
+            </div>
+          </>
+        )}
+
+        <div className="bg-blue-50 border border-blue-200 text-blue-900 p-6 rounded-xl hover:shadow-lg transition-shadow duration-300 cursor-default mt-2 mb-5">
+          <h3 className="text-[30px] font-semibold mb-1">
+            📞 Confusion हटाओ, Clarity लाओ
+          </h3>
+          <p className="text-[24px] mb-2">
+            Talk to our{" "}
+            <span className="font-medium">Academic Counseling Expert</span>
+          </p>
+          <p className="text-[24px] font-semibold">
+            Call us at:{" "}
+            <a href="tel:7454848040" className="text-blue-600 hover:underline">
+              7454848040
+            </a>
+          </p>
         </div>
 
-        <div className="mt-8 space-y-4">
-          <button
-            onClick={() => navigate("/questionnaire")}
-            className="w-full bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-3 px-6 rounded-full transition-all duration-300"
-            disabled={loading || isEditing}
-          >
-            Continue Assessment
-          </button>
-
-          <button
-            onClick={() => navigate("/chat")}
-            className="w-full bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-3 px-6 rounded-full transition-all duration-300"
-            disabled={isEditing}
-          >
-            Back to Chat
-          </button>
-        </div>
+        <button
+          onClick={() => navigate("/chat")}
+          className="w-full bg-yellow-500 hover:bg-yellow-600 hover:scale-105 text-gray-800 font-bold py-3 px-6 rounded-full transition-all duration-300"
+        >
+          Back to Chat
+        </button>
       </div>
-      {/* Debug Panel
-      <div className="max-w-3xl mx-auto mt-4 p-3 bg-gray-100 rounded-lg">
-        <details>
-          <summary className="cursor-pointer font-medium text-sm text-gray-700">API Debug Info</summary>
-          <div className="mt-2 text-xs font-mono">
-            <p>Profile API: {DUMMY_API.profile}</p>
-            <p>Progress API: {DUMMY_API.academicProgress}</p>
-            <p>Loading State: {loading ? 'true' : 'false'}</p>
-            <pre className="mt-2 p-2 bg-gray-200 rounded overflow-auto max-h-40">
-              {JSON.stringify({userProfile, academicProgress}, null, 2)}
-            </pre>
-          </div>
-        </details>
-      </div> */}
     </div>
   );
 };

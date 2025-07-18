@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { FiSend } from "react-icons/fi";
-import { Link } from "react-router-dom";
-import { IoMdSettings } from "react-icons/io";
+import { Link, useLocation } from "react-router-dom";
 import { CiLogout } from "react-icons/ci";
 import { CgProfile } from "react-icons/cg";
 import { useNavigate } from "react-router-dom";
@@ -9,16 +8,28 @@ import "react-markdown";
 import Markdown from "react-markdown";
 
 const ChatArea = () => {
-  const [inputValue, setInputValue] = useState("");
   const navigate = useNavigate();
   const [messages, setMessages] = useState([]);
   const [userId, setUserId] = useState(null);
   const [currentSessionId, setCurrentSessionId] = useState(null);
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
+  const [inputValue, setInputValue] = useState("");
+  const location = useLocation();
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
+    const params = new URLSearchParams(location.search);
+    const query = params.get("query");
+    if (query === "") {
+      navigate("/chat", { replace: true });
+    }
+    if (query) {
+      setInputValue(query);
+      navigate("/chat", { replace: true });
+    }
+  }, [location.search, navigate]);
+
+  useEffect(() => {
     const userData = localStorage.getItem("user");
 
     if (!userData) {
@@ -146,24 +157,18 @@ const ChatArea = () => {
           {open && (
             <div className="absolute right-4 top-16 w-60 bg-gray-800 shadow-2xl rounded-xl z-50 border border-gray-600">
               <ul className="flex flex-col">
-                {/* <Link
+                <Link
                   to="/profile"
                   className="px-6 py-3 hover:bg-gray-700 text-white text-base rounded-t-xl transition-all duration-200 flex items-center gap-2"
                 >
                   <CgProfile />
                   Profile
-                </Link> */}
-                {/* <Link
-                  to="/settings"
-                  className="px-6 py-3 hover:bg-gray-700 text-white text-base transition-all duration-200 flex items-center gap-2"
-                >
-                  <IoMdSettings />
-                  Settings
-                </Link> */}
+                </Link>
+
                 <button
                   onClick={() => {
                     localStorage.removeItem("token");
-                    localStorage.removeItem("user"); // Changed from "user"
+                    localStorage.removeItem("user");
                     localStorage.removeItem("loginTime");
                     navigate("/auth/login");
                   }}
@@ -236,7 +241,7 @@ const ChatArea = () => {
         </div>
       </div>
 
-      <div className="p-4 border-t border-gray-700">
+      <div className="p-4">
         <form onSubmit={handleSubmit} className="max-w-2xl mx-auto">
           <div className="flex items-center bg-yellow-100 rounded-lg p-2">
             <input

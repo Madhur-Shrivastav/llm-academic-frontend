@@ -1,14 +1,17 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import html2pdf from "html2pdf.js";
+import { FiSend } from "react-icons/fi";
 
 const Result_12 = () => {
   const [profileData, setProfileData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isGeneratingReport, setIsGeneratingReport] = useState(false);
+  const [input, setInput] = useState("");
+  const navigate = useNavigate();
 
   useEffect(() => {
     try {
@@ -62,6 +65,11 @@ const Result_12 = () => {
     remarks,
     profile_in_a_gist,
   } = profileData;
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    navigate(`/chat?query=${encodeURIComponent(input.trim())}`);
+  };
 
   async function downloadReport() {
     const storedUser = localStorage.getItem("user");
@@ -299,7 +307,7 @@ const Result_12 = () => {
           filename: `career_report_${userId}.pdf`,
           html2canvas: { scale: 2, useCORS: true },
           jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
-          pagebreak: { mode: ["avoid-all", "css", "legacy"] }, // Fix content cut
+          pagebreak: { mode: ["avoid-all", "css", "legacy"] },
         })
         .from(content)
         .save();
@@ -322,11 +330,11 @@ const Result_12 = () => {
   return (
     <div className="min-h-screen w-full flex flex-col items-center justify-start bg-white pt-12 md:pt-24 pb-12 font-poppins px-5 sm:px-8 lg:px-16">
       <div className="bg-white rounded-2xl shadow-xl p-6 sm:p-10 max-w-md md:max-w-3xl w-full mx-auto">
-        <div className="flex flex-col items-center mb-10">
+        <div className="flex flex-col items-center mb-8">
           <img
-            src="/logo.jpg"
+            src="/public/logo3.jpg"
             alt="TrueYou logo"
-            className="h-48 sm:h-56 md:h-64 object-contain"
+            className="h-44 sm:h-48 object-contain "
           />
         </div>
 
@@ -479,6 +487,33 @@ const Result_12 = () => {
             </span>
           </div>
 
+          <p className="text-[#FFA500] text-base sm:text-[1.5rem] leading-relaxed text-center mb-4 font-semibold">
+            Still have questions or want to explore more?
+          </p>
+
+          <form onSubmit={handleSubmit} className="max-w-2xl mx-auto">
+            <div className="flex items-center bg-yellow-100 rounded-lg p-2">
+              <input
+                type="text"
+                placeholder="Just continue to ask..."
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                className="flex-1 mx-2 bg-transparent text-gray-700 outline-none text-sm placeholder-gray-400"
+              />
+
+              <button
+                type="submit"
+                className={`flex items-center justify-center h-10 w-10 rounded-lg ${
+                  input.trim()
+                    ? "bg-green-600 hover:bg-green-500 text-white"
+                    : "bg-yellow-600 text-white cursor-not-allowed"
+                }`}
+              >
+                <FiSend />
+              </button>
+            </div>
+          </form>
+
           <div className="bg-blue-50 border border-blue-200 text-blue-900 p-6 rounded-xl hover:shadow-lg transition-shadow duration-300 cursor-default mt-2 mb-5">
             <h3 className="text-[30px] font-semibold mb-1">
               📞 Confusion हटाओ, Clarity लाओ
@@ -498,13 +533,6 @@ const Result_12 = () => {
             </p>
           </div>
         </div>
-
-        <p className="text-gray-700 text-base sm:text-lg leading-relaxed text-center">
-          Still have questions or want to explore more?{" "}
-          <Link to="/chat" className="font-semibold text-yellow-600">
-            Just continue to ask.
-          </Link>
-        </p>
 
         <div className="mt-8 text-center">
           <button

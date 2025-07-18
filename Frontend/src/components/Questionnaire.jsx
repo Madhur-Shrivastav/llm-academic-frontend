@@ -243,7 +243,11 @@ const Questionnaire = () => {
   return (
     <div className="min-h-screen w-full bg-white flex flex-col items-center py-10 px-4 sm:px-8 font-poppins">
       <div className="flex flex-col items-center">
-        <img src="/logo.jpg" alt="Logo" className="h-[18rem] sm:h-[20rem]" />
+        <img
+          src="/public/logo3.jpg"
+          alt="Logo"
+          className="h-[12rem] mb-3 sm:h-[14rem]"
+        />
       </div>
 
       <div className="w-full max-w-3xl space-y-6">

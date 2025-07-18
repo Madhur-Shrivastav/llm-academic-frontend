@@ -25,20 +25,6 @@ const SignUp = () => {
     }));
   };
 
-  // const handleFileChange = (e) => {
-  //   const file = e.target.files[0];
-  //   if (file) {
-  //     const reader = new FileReader();
-  //     reader.onloadend = () => {
-  //       setFormData((prev) => ({
-  //         ...prev,
-  //         profileImage: reader.result,
-  //       }));
-  //     };
-  //     reader.readAsDataURL(file);
-  //   }
-  // };
-
   const navigate = useNavigate();
 
   const handleSignUp = async (formData) => {
@@ -84,7 +70,7 @@ const SignUp = () => {
       console.error("Signup error:", error);
       toast.error("Network or server error", { autoClose: 3000 });
     } finally {
-      setLoading(false); // re-enable button
+      setLoading(false);
     }
   };
 
@@ -94,17 +80,17 @@ const SignUp = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-white text-black px-4">
+    <div className="min-h-screen flex items-center justify-center bg-white text-black p-4">
       <form
         onSubmit={handleSubmit}
-        className="bg-white flex flex-col gap-8 rounded-2xl w-full max-w-3xl p-6 sm:p-10 shadow-xl"
+        className="bg-white flex flex-col gap-8 rounded-2xl w-full max-w-3xl p-6 sm:p-10 shadow-xl border-4 border-blue-600"
       >
         <ToastContainer />
         <div className="flex flex-col items-center text-center">
           <img
-            src="/public/logo.jpg"
+            src="/public/logo3.jpg"
             alt="Logo"
-            className="w-24 h-24 object-contain mb-2"
+            className="w-28 h-28 sm:w-36 sm:h-36 object-contain mb-2"
           />
           <h1 className="text-blue-600 text-3xl sm:text-4xl font-bold mb-2">
             Sign Up
@@ -136,7 +122,7 @@ const SignUp = () => {
                 className="peer block w-full p-3 text-sm text-black bg-yellow-100 border border-white rounded-md focus:outline-none"
                 required
               />
-              <span className="absolute left-3 top-3 bg-yellow-100 text-lg text-black transition-all duration-300 peer-focus:text-sm peer-focus:-translate-y-5 peer-focus:px-1 peer-valid:text-sm peer-valid:-translate-y-5 peer-valid:px-1">
+              <span className="absolute left-3 top-3 bg-yellow-100 text-lg text-[#ffa500] transition-all duration-300 peer-focus:text-sm peer-focus:-translate-y-5 peer-focus:px-1 peer-valid:text-sm peer-valid:-translate-y-5 peer-valid:px-1">
                 {label}
               </span>
             </label>
@@ -149,10 +135,10 @@ const SignUp = () => {
             name="password"
             value={formData.password}
             onChange={(e) => handleChange("password", e.target.value)}
-            className="peer block w-full p-3 text-sm text-black bg-yellow-100 border border-white rounded-md focus:outline-none"
+            className="peer block w-full p-3 text-sm text-[black] bg-yellow-100 border border-white rounded-md focus:outline-none"
             required
           />
-          <span className="absolute left-3 top-3 bg-yellow-100 text-lg text-black transition-all duration-300 peer-focus:text-sm peer-focus:-translate-y-5 peer-focus:px-1 peer-valid:text-sm peer-valid:-translate-y-5 peer-valid:px-1">
+          <span className="absolute left-3 top-3 bg-yellow-100 text-lg text-[#ffa500] transition-all duration-300 peer-focus:text-sm peer-focus:-translate-y-5 peer-focus:px-1 peer-valid:text-sm peer-valid:-translate-y-5 peer-valid:px-1">
             Create Password
           </span>
         </label>
@@ -179,29 +165,6 @@ const SignUp = () => {
             ))}
           </div>
         </div>
-
-        {/* <div className="bg-yellow-100 rounded-lg p-4 flex flex-col items-start gap-2">
-          <label
-            htmlFor="file"
-            className="text-black font-medium cursor-pointer"
-          >
-            Choose a picture
-          </label>
-          <input
-            type="file"
-            id="file"
-            accept="image/*"
-            className="hidden"
-            onChange={handleFileChange}
-          />
-          {formData.profileImage && (
-            <img
-              src={formData.profileImage}
-              alt="Profile Preview"
-              className="w-24 h-24 object-cover rounded-full mt-2"
-            />
-          )}
-        </div> */}
 
         <button
           type="submit"

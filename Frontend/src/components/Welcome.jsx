@@ -8,9 +8,9 @@ const Welcome = () => {
       <div className="relative z-10 bg-white rounded-[20px] shadow-custom-card p-6 sm:p-10 text-center max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg w-full mx-auto">
         <div className="mb-6">
           <img
-            src="/public/logo.jpg"
+            src="/public/logo3.jpg"
             alt="TrueYou logo"
-            className="mx-auto h-[20rem] sm:h-[20rem] object-contain"
+            className="mx-auto h-[10rem] sm:h-[12rem] object-contain"
           />
         </div>
 

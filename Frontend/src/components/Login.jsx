@@ -39,6 +39,7 @@ const Login = () => {
       });
 
       const data = await res.json();
+      console.log(data);
 
       if (!res.ok) {
         if (data.detail === "Invalid credentials") {
@@ -50,12 +51,15 @@ const Login = () => {
       }
 
       toast.success("Login successful!", { autoClose: 1000 });
-
       localStorage.setItem("token", data.access_token);
+
       const mergedUser = {
         id: data.user_id,
         education_level: data.education_level,
-        email: formData.email,
+        full_name: data.full_name,
+        email: data.email,
+        contact: data.contact,
+        llm_profile: data.llm_profile,
       };
       localStorage.setItem("user", JSON.stringify(mergedUser));
       localStorage.setItem("loginTime", Date.now().toString());
