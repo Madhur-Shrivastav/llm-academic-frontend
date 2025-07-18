@@ -331,13 +331,17 @@ const Result_10 = () => {
           />
         </div>
 
-        <h1 className="text-3xl sm:text-4xl font-extrabold text-blue-600 mb-10 tracking-wide text-center">
-          Final Results
+        <h1 className="text-3xl sm:text-4xl font-extrabold text-blue-600 mb-10 tracking-wide text-center underline">
+          Your Career Report Overview
         </h1>
 
         <div className="space-y-8 mb-12">
           <div className="bg-yellow-50 rounded-xl p-6 border border-yellow-300 hover:shadow-lg transition-shadow duration-300 cursor-default">
-            <p className="text-gray-900 text-lg sm:text-xl font-semibold">
+            <p className="text-gray-900 text-lg sm:text-[25px] font-bold flex flex-col leading-tight">
+              <span className="font-bold text-yellow-600">
+                Hi! {JSON.parse(localStorage.getItem("user")).full_name}
+                {", "}
+              </span>
               <span className="font-semibold text-yellow-600">
                 {welcome_statement}
               </span>
@@ -345,24 +349,24 @@ const Result_10 = () => {
           </div>
 
           <div className="bg-teal-50 rounded-xl p-6 border border-teal-300 hover:shadow-lg transition-shadow duration-300 cursor-default">
-            <h3 className="text-xl font-semibold text-teal-700 mb-3">
+            <h3 className="text-[30px] font-bold text-teal-700">
               Your Natural Inclination:
             </h3>
-            <span className="text-gray-800 text-base sm:text-lg leading-relaxed">
+            <span className="text-gray-800 text-base sm:text-[23px] leading-tight">
               {your_natural_inclination}
             </span>
           </div>
 
           {potential_career_paths && potential_career_paths.length > 0 && (
             <div className="bg-green-50 rounded-xl p-6 border border-green-300 hover:shadow-lg transition-shadow duration-300 cursor-default">
-              <h3 className="text-xl font-semibold text-green-700 mb-3">
+              <h3 className="text-[30px] font-bold text-green-700 mb-3">
                 Potential Career Options:
               </h3>
               <div className="flex flex-wrap gap-2">
                 {potential_career_paths.map((keyword, index) => (
                   <span
                     key={index}
-                    className="bg-green-200 text-green-800 px-3 py-1 rounded-full text-sm"
+                    className="bg-green-200 text-green-800 px-3 py-1 rounded-full text-[20px]"
                   >
                     {keyword.path}
                   </span>
@@ -373,14 +377,14 @@ const Result_10 = () => {
 
           {your_strengths_and_qualities && (
             <div className="bg-purple-50 rounded-xl p-6 border border-purple-300 hover:shadow-lg transition-shadow duration-300 cursor-default">
-              <h3 className="text-xl font-semibold text-purple-700 mb-3">
+              <h3 className="text-[30px] font-bold text-purple-700 mb-3">
                 Strengths and Qualities:
               </h3>
 
-              <ul className="list-disc list-inside text-gray-800 space-y-1">
+              <ul className="list-disc list-inside text-gray-800 space-y-2">
                 {your_strengths_and_qualities.map((strength, index) => (
-                  <li key={index} className="text-base sm:text-lg">
-                    <span className="font-medium capitalize">{strength}</span>{" "}
+                  <li key={index} className="text-base sm:text-[23px]">
+                    <span className="capitalize">{strength}</span>{" "}
                   </li>
                 ))}
               </ul>
@@ -389,12 +393,12 @@ const Result_10 = () => {
 
           {possible_roadblocks && possible_roadblocks.length > 0 && (
             <div className="bg-rose-50 rounded-xl p-6 border border-rose-300 hover:shadow-lg transition-shadow duration-300 cursor-default">
-              <h3 className="text-xl font-semibold text-rose-700 mb-3">
+              <h3 className="text-[30px] font-bold text-rose-700 mb-3">
                 Possible Roadblocks:
               </h3>
               <ul className="list-disc list-inside text-gray-800 space-y-2">
                 {possible_roadblocks.map((step, index) => (
-                  <li key={index} className="text-base sm:text-lg">
+                  <li key={index} className="text-base sm:text-[23px]">
                     {step}
                   </li>
                 ))}
@@ -402,25 +406,25 @@ const Result_10 = () => {
             </div>
           )}
 
-          <div className="bg-yellow-50 rounded-xl p-6 border border-yellow-300 hover:shadow-lg transition-shadow duration-300 cursor-default">
+          {/* <div className="bg-yellow-50 rounded-xl p-6 border border-yellow-300 hover:shadow-lg transition-shadow duration-300 cursor-default">
             <h3 className="text-xl font-semibold text-yellow-700 mb-3">
               Profile Summary:
             </h3>
             <span className="text-gray-800 text-base sm:text-lg leading-relaxed">
               {profile_summary}
             </span>
-          </div>
+          </div> */}
 
           {profile_in_a_gist && (
             <div className="bg-indigo-50 rounded-xl p-6 border border-indigo-300 hover:shadow-lg transition-shadow duration-300 cursor-default">
-              <h3 className="text-xl font-semibold text-indigo-700 mb-3">
-                Profile in a Gist
+              <h3 className="text-[34px] font-bold text-indigo-700 mb-3 text-center underline">
+                Report Summary
               </h3>
               <div className="mb-4">
-                <h4 className="text-lg font-semibold text-indigo-600 mb-2">
+                <h4 className="text-[26.5px] font-semibold text-indigo-600 mb-2 underline">
                   Subjects you are good at:
                 </h4>
-                <ul className="list-disc list-inside text-gray-800 space-y-1">
+                <ul className="list-disc list-inside text-gray-800 space-y-1 text-[22px]">
                   {profile_in_a_gist.subjects_good_at.map((subject, index) => (
                     <li key={index}>{subject}</li>
                   ))}
@@ -428,19 +432,19 @@ const Result_10 = () => {
               </div>
 
               <div className="mb-4">
-                <h4 className="text-lg font-semibold text-indigo-600 mb-2">
+                <h4 className="text-[26.5px] font-semibold text-indigo-600 mb-2 underline">
                   Natural Calling:
                 </h4>
-                <ul className="list-disc list-inside text-gray-800 space-y-1">
+                <ul className="list-disc list-inside text-gray-800 space-y-1 text-[22px]">
                   <li>{profile_in_a_gist.natural_calling}</li>
                 </ul>
               </div>
 
               <div className="mb-4">
-                <h4 className="text-lg font-semibold text-indigo-600 mb-2">
+                <h4 className="text-[26.5px] font-semibold text-indigo-600 mb-2 underline">
                   Naturally inclined to pursue:
                 </h4>
-                <ul className="list-disc list-inside text-gray-800 space-y-1">
+                <ul className="list-disc list-inside text-gray-800 space-y-1 text-[22px]">
                   {profile_in_a_gist.inclined_to_pursue.map(
                     (inclination, index) => (
                       <li key={index}>{inclination}</li>
@@ -450,10 +454,10 @@ const Result_10 = () => {
               </div>
 
               <div className="mb-4">
-                <h4 className="text-lg font-semibold text-indigo-600 mb-2">
+                <h4 className="text-[26.5px] font-semibold text-indigo-600 mb-2 underline">
                   Roadblocks:
                 </h4>
-                <ul className="list-disc list-inside text-gray-800 space-y-1">
+                <ul className="list-disc list-inside text-gray-800 space-y-1 text-[22px]">
                   {profile_in_a_gist.roadblocks.map((roadblock, index) => (
                     <li key={index}>{roadblock}</li>
                   ))}
@@ -461,8 +465,8 @@ const Result_10 = () => {
               </div>
 
               <div className="mb-4">
-                <p className="text-gray-800 text-base sm:text-lg leading-relaxed">
-                  <strong className="text-lg font-semibold text-indigo-600 mb-2">
+                <p className="text-gray-800 text-base sm:text-[22px] leading-relaxed">
+                  <strong className="text-[26.5px] font-semibold text-indigo-600 mb-2 underline">
                     Encouragement:
                   </strong>{" "}
                   {profile_in_a_gist.encouragement}
@@ -472,23 +476,23 @@ const Result_10 = () => {
           )}
 
           <div className="bg-yellow-50 rounded-xl p-6 border border-yellow-300 hover:shadow-lg transition-shadow duration-300 cursor-default">
-            <h3 className="text-xl font-semibold text-yellow-700 mb-3">
+            <h3 className="text-[30px] font-semibold text-yellow-700">
               Final Note:
             </h3>
-            <span className="text-gray-800 text-base sm:text-lg leading-relaxed">
+            <span className="text-gray-800 text-base sm:text-[23px] leading-relaxed">
               {final_note}
             </span>
           </div>
 
           <div className="bg-blue-50 border border-blue-200 text-blue-900 p-6 rounded-xl hover:shadow-lg transition-shadow duration-300 cursor-default mt-2 mb-5">
-            <h3 className="text-xl font-semibold mb-1">
+            <h3 className="text-[30px] font-semibold mb-1">
               📞 Confusion हटाओ, Clarity लाओ
             </h3>
-            <p className="text-sm mb-2">
+            <p className="text-[24px] mb-2">
               Talk to our{" "}
               <span className="font-medium">Academic Counseling Expert</span>
             </p>
-            <p className="text-base font-semibold">
+            <p className="text-[24px] font-semibold">
               Call us at:{" "}
               <a
                 href="tel:7454848040"
@@ -511,7 +515,7 @@ const Result_10 = () => {
           <button
             disabled={isGeneratingReport}
             onClick={downloadReport}
-            className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105"
+            className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105 text-[22px]"
           >
             {isGeneratingReport ? "Downloading..." : "Download Final Report"}
           </button>

@@ -323,22 +323,22 @@ const Result_Graduate = () => {
       <div className="bg-white rounded-2xl shadow-xl p-6 sm:p-10 max-w-md md:max-w-3xl w-full mx-auto">
         <div className="flex flex-col items-center mb-10">
           <img
-            src="/logo.jpg" // Ensure this path is correct, might need to be /public/logo.jpg or imported
+            src="/logo.jpg"
             alt="TrueYou logo"
-            className="h-48 sm:h-56 md:h-64 object-contain"
+            className="h-48 sm:h-56 md:h-64 object-contain "
           />
         </div>
 
-        <h1 className="text-3xl sm:text-4xl font-extrabold text-blue-600 mb-10 tracking-wide text-center">
-          Final Results
+        <h1 className="text-3xl sm:text-4xl font-extrabold text-blue-600 mb-10 tracking-wide text-center underline">
+          Your Career Report Overview
         </h1>
 
         <div className="space-y-8 mb-12">
           <div className="bg-yellow-50 rounded-xl p-6 border border-yellow-300 hover:shadow-lg transition-shadow duration-300 cursor-default">
-            <h3 className="text-xl font-semibold text-yellow-700 mb-3">
+            <h3 className="text-[30px] font-bold text-yellow-700">
               Your Natural Inclination:
             </h3>
-            <span className="text-gray-800 text-base sm:text-lg leading-relaxed">
+            <span className="text-gray-800 text-base sm:text-[23px] leading-tight">
               {your_natural_inclination}
             </span>
           </div>
@@ -346,13 +346,18 @@ const Result_Graduate = () => {
           {careers_that_fit_you_well &&
             careers_that_fit_you_well.length > 0 && (
               <div className="bg-blue-50 rounded-xl p-6 border border-blue-300 hover:shadow-lg transition-shadow duration-300 cursor-default">
-                <h3 className="text-xl font-semibold text-blue-700 mb-3">
-                  Careers that fit you well:
+                <h3 className="text-[30px] font-bold text-blue-700 mb-1">
+                  Careers that Fit you well:
                 </h3>
-                <ul className="list-disc list-inside text-gray-800 space-y-2">
+                <ul className="list-disc list-inside text-gray-800 space-y-3">
                   {careers_that_fit_you_well.map((step, index) => (
-                    <li key={index} className="text-base sm:text-lg">
-                      {step}
+                    <li key={index} className="text-base sm:text-[23px]">
+                      <span className="capitalize leading-tight font-bold">
+                        {step.split("-")[0]} -
+                      </span>
+                      <span className=" leading-tight">
+                        {step.split("-")[1]}
+                      </span>
                     </li>
                   ))}
                 </ul>
@@ -360,95 +365,56 @@ const Result_Graduate = () => {
             )}
 
           <div className="bg-yellow-50 rounded-xl p-6 border border-yellow-300 hover:shadow-lg transition-shadow duration-300 cursor-default">
-            <p className="text-gray-800 text-base sm:text-lg leading-relaxed">
-              {your_degree_already_helps ||
-                "Based on your responses, we've identified key strengths and areas of interest. Consider exploring these further to align with your aspirations."}
+            <h3 className="text-[30px] font-bold text-yellow-700">
+              Your Degree already helps in:
+            </h3>
+            <p className="text-gray-800 text-base sm:text-[23px] leading-tight">
+              {your_degree_already_helps}
             </p>
           </div>
 
-          {/* {identified_keywords && identified_keywords.length > 0 && (
-            <div className="bg-blue-50 rounded-xl p-6 border border-blue-300 hover:shadow-lg transition-shadow duration-300 cursor-default">
-              <h3 className="text-xl font-semibold text-blue-700 mb-3">
-                Identified Keywords:
-              </h3>
-              <div className="flex flex-wrap gap-2">
-                {identified_keywords.map((keyword, index) => (
-                  <span
-                    key={index}
-                    className="bg-blue-200 text-blue-800 px-3 py-1 rounded-full text-sm"
-                  >
-                    {keyword}
-                  </span>
-                ))}
-              </div>
-            </div>
-          )} */}
-
           {what_you_can_do_next && what_you_can_do_next.length > 0 && (
             <div className="bg-green-50 rounded-xl p-6 border border-green-300 hover:shadow-lg transition-shadow duration-300 cursor-default">
-              <h3 className="text-xl font-semibold text-green-700 mb-3">
+              <h3 className="text-[30px] font-bold text-green-700 mb-3">
                 Recommended Next Steps:
               </h3>
               <ul className="list-disc list-inside text-gray-800 space-y-2">
                 {what_you_can_do_next.map((step, index) => (
-                  <li key={index} className="text-base sm:text-lg">
-                    {step}
+                  <li
+                    key={index}
+                    className="text-base sm:text-[23px] leading-tight"
+                  >
+                    <span>{step}</span>{" "}
                   </li>
                 ))}
               </ul>
             </div>
           )}
 
-          {/* {personality_scores && (
-            <div className="bg-purple-50 rounded-xl p-6 border border-purple-300 hover:shadow-lg transition-shadow duration-300 cursor-default">
-              <h3 className="text-xl font-semibold text-purple-700 mb-3">
-                Personality Insights:
-              </h3>
-              {typeof personality_scores === "string" ? (
-                <p className="text-gray-800 text-base sm:text-lg">
-                  {personality_scores}
-                </p>
-              ) : (
-                <ul className="list-disc list-inside text-gray-800 space-y-1">
-                  {Object.entries(personality_scores).map(([key, value]) => (
-                    <li key={key} className="text-base sm:text-lg">
-                      <span className="font-medium capitalize">
-                        {key.replace(/_/g, " ")}:
-                      </span>{" "}
-                      {String(value)}
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </div>
-          )} */}
-
           <div className="bg-yellow-50 rounded-xl p-6 border border-yellow-300 hover:shadow-lg transition-shadow duration-300 cursor-default">
-            <h3 className="text-xl font-semibold text-yellow-700 mb-3">
+            <h3 className="text-[30px] font-bold text-yellow-700">
               Self Reflection:
             </h3>
-            <span className="text-gray-800 text-base sm:text-lg leading-relaxed">
+            <span className="text-gray-800 text-base sm:text-[23px] leading-tight">
               {self_reflection}
             </span>
           </div>
 
           <div className="bg-red-50 rounded-xl p-6 border border-red-300 hover:shadow-lg transition-shadow duration-300 cursor-default">
-            <h3 className="text-xl font-semibold text-red-700 mb-3">
-              Final Word:
-            </h3>
-            <span className="text-gray-800 text-base sm:text-lg leading-relaxed">
+            <h3 className="text-[30px] font-bold text-red-700">Final Word:</h3>
+            <span className="text-gray-800 text-base sm:text-[23px] leading-tight">
               {final_word}
             </span>
           </div>
           <div className="bg-blue-50 border border-blue-200 text-blue-900 p-6 rounded-xl hover:shadow-lg transition-shadow duration-300 cursor-default mt-2 mb-5">
-            <h3 className="text-xl font-semibold mb-1">
+            <h3 className="text-[30px] font-semibold mb-1">
               📞 Confusion हटाओ, Clarity लाओ
             </h3>
-            <p className="text-sm mb-2">
+            <p className="text-[24px] mb-2">
               Talk to our{" "}
               <span className="font-medium">Academic Counseling Expert</span>
             </p>
-            <p className="text-base font-semibold">
+            <p className="text-[24px] font-semibold">
               Call us at:{" "}
               <a
                 href="tel:7454848040"
@@ -471,7 +437,7 @@ const Result_Graduate = () => {
           <button
             disabled={isGeneratingReport}
             onClick={downloadReport}
-            className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105"
+            className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105 text-[22px]"
           >
             {isGeneratingReport ? "Downloading..." : "Download Final Report"}
           </button>

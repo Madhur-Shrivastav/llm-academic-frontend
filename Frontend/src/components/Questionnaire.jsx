@@ -291,8 +291,8 @@ const QuestionCard = ({
 
   return (
     <div className="rounded-2xl border border-yellow-100 bg-yellow-100 p-5 shadow">
-      <h2 className="text-lg font-semibold text-blue-800 mb-2">{title}</h2>
-      <p className="text-gray-800 font-medium mb-4">{prompt}</p>
+      <h2 className="text-[24px] font-semibold text-blue-800 mb-2">{title}</h2>
+      <p className="text-gray-800 font-medium mb-4 text-2xl">{prompt}</p>
 
       {isGrouped && grouped_options && (
         <div className="space-y-4">
@@ -304,7 +304,7 @@ const QuestionCard = ({
                   <button
                     key={opt}
                     onClick={() => onSelect({ ...selected, [group]: opt })}
-                    className={`px-3 py-1 rounded-full text-sm font-medium transition-all duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-400 ${
+                    className={`px-3 py-1 rounded-full text-xl font-medium transition-all duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-400 ${
                       selected?.[group] === opt
                         ? "bg-blue-600 text-white"
                         : "border border-blue-500 text-blue-600 hover:bg-blue-100"
@@ -344,7 +344,7 @@ const QuestionCard = ({
 
                   onSelect(updated);
                 }}
-                className={`px-4 py-2 rounded-lg font-semibold text-sm transition-all duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-400 ${
+                className={`px-4 py-2 rounded-lg font-semibold text-[18px] transition-all duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-400 ${
                   isSelected
                     ? "bg-blue-600 text-white"
                     : "border border-blue-500 text-blue-600 hover:bg-blue-100"
@@ -399,12 +399,12 @@ const QuestionCard = ({
                   ? onSelect({ value: opt, otherText: "" })
                   : onSelect(opt)
               }
-              className={`px-4 py-2 rounded-lg font-semibold text-sm transition-all duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-400 ${
+              className={`px-4 py-2 rounded-lg font-semibold text-[18px] transition-all duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-400 ${
                 (typeof selected === "object" ? selected?.value : selected) ===
                 opt
                   ? "bg-blue-600 text-white"
                   : "border border-blue-500 text-blue-600 hover:bg-blue-100"
-              }`}
+              } text-left`}
             >
               {opt}
             </button>
