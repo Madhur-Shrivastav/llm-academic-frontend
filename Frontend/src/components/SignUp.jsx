@@ -152,7 +152,7 @@ const SignUp = () => {
         </label>
 
         <div className="w-full">
-          <p className="text-lg font-medium mb-2">What do you study?</p>
+          <p className="text-lg font-medium mb-2">You are studying in:</p>
           <div className="flex flex-wrap gap-3">
             {options.map(({label,value}) => (
               <button
