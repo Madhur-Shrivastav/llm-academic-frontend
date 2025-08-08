@@ -1,4 +1,4 @@
-import { use, useState } from "react";
+import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -6,13 +6,13 @@ import "react-toastify/dist/ReactToastify.css";
 const SignUp = () => {
   const [loading, setLoading] = useState(false);
   const [grade, setGrade] = useState("");
-  const [grade2,setGrade2] = useState("");
+  const [grade2, setGrade2] = useState("");
   const options = [
-    { label: "9th", value: "9th or 10th" },
-    { label: "10th", value: "9th or 10th" },
-    { label: "11th", value: "11th or 12th" },
-    { label: "12th", value: "11th or 12th" },
-    { label: "Graduation", value: "Graduation" }
+    { label: "9th", value: "9th" },
+    { label: "10th", value: "10th" },
+    { label: "11th", value: "11th" },
+    { label: "12th", value: "12th" },
+    { label: "Graduation", value: "Graduation" },
   ];
 
   const [formData, setFormData] = useState({
@@ -83,7 +83,7 @@ const SignUp = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // console.log(formData);
+    console.log(formData);
     handleSignUp(formData);
   };
 
@@ -154,19 +154,20 @@ const SignUp = () => {
         <div className="w-full">
           <p className="text-lg font-medium mb-2">You are studying in:</p>
           <div className="flex flex-wrap gap-3">
-            {options.map(({label,value}) => (
+            {options.map(({ label, value }) => (
               <button
                 type="button"
                 key={label}
                 onClick={() => {
                   setGrade(value);
-                  setGrade2(label)
+                  setGrade2(label);
                   setFormData((prevData) => ({ ...prevData, grade: value }));
                 }}
-                className={`px-4 py-2 rounded-lg font-semibold text-sm sm:text-base transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-300 ${grade2 === label
-                  ? "bg-blue-600 text-white"
-                  : "border border-blue-500 text-blue-500 hover:scale-105 hover:border-blue-600 hover:text-blue-600"
-                  }`}
+                className={`px-4 py-2 rounded-lg font-semibold text-sm sm:text-base transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-300 ${
+                  grade2 === label
+                    ? "bg-blue-600 text-white"
+                    : "border border-blue-500 text-blue-500 hover:scale-105 hover:border-blue-600 hover:text-blue-600"
+                }`}
               >
                 {label}
               </button>
@@ -177,10 +178,11 @@ const SignUp = () => {
         <button
           type="submit"
           disabled={loading}
-          className={`p-3 rounded-full text-white font-bold text-base transition-transform w-full ${loading
-            ? "bg-gray-400 cursor-not-allowed"
-            : "bg-yellow-500 hover:bg-yellow-600 hover:scale-105"
-            }`}
+          className={`p-3 rounded-full text-white font-bold text-base transition-transform w-full ${
+            loading
+              ? "bg-gray-400 cursor-not-allowed"
+              : "bg-yellow-500 hover:bg-yellow-600 hover:scale-105"
+          }`}
         >
           {loading ? "Signing up..." : "SIGN UP"}
         </button>

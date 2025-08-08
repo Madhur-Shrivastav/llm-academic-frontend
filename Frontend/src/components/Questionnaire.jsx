@@ -44,9 +44,9 @@ const Questionnaire = () => {
     setLoading(true);
 
     let levelToFetch = "";
-    if (educationLevel === "9th or 10th") {
+    if (educationLevel === "9th" || educationLevel === "10th") {
       levelToFetch = "10th";
-    } else if (educationLevel === "11th or 12th") {
+    } else if (educationLevel === "11th" || educationLevel === "12th") {
       levelToFetch = "12th";
     } else {
       levelToFetch = "graduate";
@@ -191,9 +191,15 @@ const Questionnaire = () => {
       });
 
       let backendEducationLevel = "graduate";
-      if (educationLevel === "9th or 10th") backendEducationLevel = "10th";
-      else if (educationLevel === "11th or 12th")
+      if (educationLevel === "9th") {
+        backendEducationLevel = "9th";
+      } else if (educationLevel === "10th") {
+        backendEducationLevel = "10th";
+      } else if (educationLevel === "11th") {
+        backendEducationLevel = "11th";
+      } else if (educationLevel === "12th") {
         backendEducationLevel = "12th";
+      }
 
       const payload = {
         user_id,
@@ -201,6 +207,8 @@ const Questionnaire = () => {
         raw_responses: answers,
         questions_data: questionsData,
       };
+
+      console.log(payload);
 
       const response = await fetch(
         `${import.meta.env.VITE_API_URL}profile/questionnaire`,

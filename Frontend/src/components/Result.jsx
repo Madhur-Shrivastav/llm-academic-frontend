@@ -38,9 +38,9 @@ const Result = () => {
 
   return (
     <>
-      {educationLevel === "9th or 10th" ? (
+      {educationLevel === "9th" || educationLevel === "10th" ? (
         <Result_10 />
-      ) : educationLevel === "11th or 12th" ? (
+      ) : educationLevel === "11th" || educationLevel === "12th" ? (
         <Result_12 />
       ) : (
         <Result_Graduate />

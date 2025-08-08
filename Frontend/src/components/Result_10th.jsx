@@ -13,6 +13,8 @@ const Result_10 = () => {
   const [input, setInput] = useState("");
   const navigate = useNavigate();
 
+  console.log(profileData);
+
   useEffect(() => {
     try {
       const storedProfile = sessionStorage.getItem("llm_profile");
@@ -423,7 +425,7 @@ const Result_10 = () => {
                   Subjects you are good at:
                 </h4>
                 <ul className="list-disc list-inside text-gray-800 space-y-1 text-[22px]">
-                  {profile_in_a_gist.subjects_good_at.map((subject, index) => (
+                  {profile_in_a_gist.subjects_good_at?.map((subject, index) => (
                     <li key={index}>{subject}</li>
                   ))}
                 </ul>
@@ -443,7 +445,7 @@ const Result_10 = () => {
                   Naturally inclined to pursue:
                 </h4>
                 <ul className="list-disc list-inside text-gray-800 space-y-1 text-[22px]">
-                  {profile_in_a_gist.inclined_to_pursue.map(
+                  {profile_in_a_gist.inclined_to_pursue?.map(
                     (inclination, index) => (
                       <li key={index}>{inclination}</li>
                     )
@@ -456,7 +458,7 @@ const Result_10 = () => {
                   Roadblocks:
                 </h4>
                 <ul className="list-disc list-inside text-gray-800 space-y-1 text-[22px]">
-                  {profile_in_a_gist.roadblocks.map((roadblock, index) => (
+                  {profile_in_a_gist.roadblocks?.map((roadblock, index) => (
                     <li key={index}>{roadblock}</li>
                   ))}
                 </ul>
